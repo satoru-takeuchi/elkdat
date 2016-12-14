@@ -1,0 +1,36 @@
+#!/bin/bash -ex
+
+# get base image
+vagrant box add elastic/ubuntu-16.04-x86_64 --provider libvirt || :
+
+# prepare for login as root to guest
+pushd elkdt
+vagrant up
+ln -sf $(vagrant ssh-config | grep IdentityFile | awk '{print $2}') ../
+HOST=$(vagrant ssh-config | grep HostName | awk '{print $2}')
+vagrant ssh -c 'sudo mkdir /root/.ssh; sudo cp /home/vagrant/.ssh/authorized_keys /root/.ssh/'
+popd
+
+# ktest setting (geust)
+SSH_CMD="ssh -i ./private_key root@${HOST}"
+${SSH_CMD} 'sed /etc/default/grub -i -e "/^GRUB_CMDLINE_LINUX_DEFAULT=/s/\"$/ console=ttyS0,115200n8\"/p"'
+${SSH_CMD} 'sed -e "s/@ROOT_UUID@/$(blkid -o value /dev/vda1 | sed -n -e 1p)/" /vagrant/ktest-grub-menuentry.template >/vagrant/ktest-grub-menuentry; cat /vagrant/ktest-grub-menuentry >>/etc/grub.d/40_custom'
+${SSH_CMD} update-grub
+
+# ktest setting (host)
+CONCURRENCY=$(($(grep -c processor /proc/cpuinfo) * 2))
+DOMAIN_ID=$(cat elkdt/.vagrant/machines/ktest/libvirt/id)
+
+sed -e "s/@MACHINE@/$HOST/" \
+    -e "s+@BASEPATH@+$PWD+" \
+    -e "s/@CONCURRENCY@/$CONCURRENCY/" \
+    -e "s/@DOMAIN_ID@/$DOMAIN_ID/" \
+    ktest/ktest.conf.template >ktest/ktest.conf
+
+# get kernel source
+test -d linux || git clone https://github.com/torvalds/linux.git
+pushd linux
+make mrproper
+git checkout -f master
+git pull
+popd

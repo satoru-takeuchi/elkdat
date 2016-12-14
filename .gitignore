@@ -1,0 +1,14 @@
+*.o
+*.ko
+*.mod
+*.cmd
+*.mod.c
+*~
+Module.symvers
+*.mod.c
+modules.order
+private_key
+ktest/ktest.log
+ktest/ktest.conf
+output/*
+linux/*

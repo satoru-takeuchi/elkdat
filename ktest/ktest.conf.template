@@ -1,0 +1,31 @@
+MACHINE = @MACHINE@
+SSH_USER = root
+PRIVATE_KEY := @BASEPATH@/private_key
+SSH_BIN := ssh -i ${PRIVATE_KEY} ${SSH_USER}@${MACHINE}
+SSH_EXEC = ${SSH_BIN} $SSH_COMMAND
+SCP_TO_TARGET = scp -i ${PRIVATE_KEY} $SRC_FILE ${SSH_USER}@${MACHINE}:$DST_FILE
+LOG_FILE = @BASEPATH@/ktest/ktest.log
+BUILD_DIR = @BASEPATH@/linux
+OUTPUT_DIR = @BASEPATH@/output
+LOCALVERSION = -ktest
+BUILD_TARGET = arch/x86/boot/bzImage
+TARGET_IMAGE = /boot/ktest-vmlinuz
+MIN_CONFIG = @BASEPATH@/ktest/minconfig
+BUILD_TYPE = olddefconfig
+BUILD_OPTIONS = -j@CONCURRENCY@
+
+POST_INSTALL = ${SSH_BIN} /usr/sbin/mkinitramfs -o /boot/ktest-initramfs.img $KERNEL_VERSION; make O=${OUTPUT_DIR} modules_prepare
+
+REBOOT_ON_SUCCESS = 0
+REBOOT_TYPE = grub2
+GRUB_FILE = /boot/grub/grub.cfg
+GRUB_MENU = ktest
+GRUB_REBOOT = grub-reboot
+POWER_CYCLE = cd ../elkdt; vagrant halt; sleep 5; vagrant up
+REBOOT = ${SSH_BIN} reboot;
+REBOOT_ON_ERROR = 1
+CONSOLE = virsh console @DOMAIN_ID@
+CLOSE_CONSOLE_SIGNAL = KILL
+
+TEST_START
+TEST_TYPE = boot

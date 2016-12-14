@@ -1,0 +1,4 @@
+menuentry 'ktest' {
+        linux   /boot/ktest-vmlinuz root=UUID=@ROOT_UUID@ ro  console=tty1 console=tty0 net.ifnames=0 console=ttyS0,115200n8
+        initrd  /boot/ktest-initramfs.img
+}

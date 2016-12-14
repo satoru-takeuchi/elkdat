@@ -1,0 +1,25 @@
+From 93cc6bf35ed2850634cb1bcfe621b38d81c6ab25 Mon Sep 17 00:00:00 2001
+From: Satoru Takeuchi <satoru.takeuchi@gmail.com>
+Date: Wed, 14 Dec 2016 20:42:17 +0900
+Subject: [PATCH] Print a message on boot
+
+Signed-off-by: Satoru Takeuchi <satoru.takeuchi@gmail.com>
+---
+ init/main.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/init/main.c b/init/main.c
+index 2858be7..9736dac 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -657,6 +657,7 @@ asmlinkage __visible void __init start_kernel(void)
+ 	}
+ 
+ 	ftrace_init();
++	printk("my patch is applied!\n");
+ 
+ 	/* Do the rest non-__init'ed, we're now alive */
+ 	rest_init();
+-- 
+2.10.2
+

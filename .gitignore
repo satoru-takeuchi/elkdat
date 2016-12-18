@@ -11,4 +11,6 @@ private_key
 ktest/ktest.log
 ktest/ktest.conf
 output/*
+linux
 linux/*
+.vagrant

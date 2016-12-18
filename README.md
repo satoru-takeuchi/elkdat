@@ -1,7 +1,7 @@
-# elkdt
+# elkdat
 easy linux kernel development and auto-test tool
 
-elkdt prepares linux kernel source and a VM, and setting these properly
+elkdat prepares linux kernel source and a VM, and setting these properly
 for linux kernel development/auto-testing.
 
 It's useful not only for experienced linux kernel developers, but also for
@@ -25,9 +25,9 @@ If you use other distros, please install corresponding packages.
 
 Just run `./init` underneath the top of this tool! 
 
-Please note that elkdt downloads whole linux kernel source repository in `./init`.
+Please note that elkdat downloads whole linux kernel source repository in `./init`.
 If you already have it, please copy it underneath the top directory as "linux".
-In addition, elkdt flushes existing kernel, object files and so on by `mrproper`.
+In addition, elkdat flushes existing kernel, object files and so on by `mrproper`.
 
 # Tutorial
 
@@ -58,7 +58,7 @@ $
 Let's login to test VM to confirm whether it works correctly.
 
 ```
-$ cd ../elkdt
+$ cd ../elkdat
 $ vagrant ssh
 ...
 vagrant@packer-qemu:~$ uname -r
@@ -81,7 +81,7 @@ $
 You can use your own kernel again by the following commands.
 
 ```
-$ cd elkdt
+$ cd elkdat
 $ vagrant ssh 
 ...
 vagrant@packer-qemu:~$ sudo su 
@@ -157,7 +157,7 @@ KTEST RESULT: TEST 1 SUCCESS!!!!         **
 Login to confirm whether we succeeded or not.
 
 ```
-$ cd ../elkdt
+$ cd ../elkdat
 $ vagrant ssh
 ...
 vagrant@packer-qemu:~$ uname -r
@@ -217,8 +217,8 @@ $
 Copy it to the test VM.
 
 ```
-$ cp hello.ko ../../../elkdt
-$ cd ../../../elkdt
+$ cp hello.ko ../../../elkdat
+$ cd ../../../elkdat
 $ vagrant rsync
 ...
 $ 
@@ -268,7 +268,7 @@ please restore the configuration file by `ktest/minconfig{.bak,}`.
 
 ## Rich tests
 
-In addition to build, install, and boot your own kernel, elkdt has the following features.
+In addition to build, install, and boot your own kernel, elkdat has the following features.
 
 - Run your own tests
 - Test your patchset one by one
@@ -276,7 +276,7 @@ In addition to build, install, and boot your own kernel, elkdt has the following
 
 All of them are fully automated.
 
-In fact, these features are not elkdt's own feature, _ktest_'s feature.
-elkdt uses ktest as backend.
+In fact, these features are not elkdat's own feature, _ktest_'s feature.
+elkdat uses ktest as backend.
 Please refer to [linux kernel auto test by using ktest](http://www.slideshare.net/satorutakeuchi18/kernel-auto-testbyktest)
 to how to setup ktest.

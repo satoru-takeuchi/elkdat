@@ -198,7 +198,7 @@ static int hello_init(void) {
 }
 
 static void hello_exit(void) {
-        printk(KERN_ALERT "driver unloaded\n");
+        /* Do nothing */
 }
 
 module_init(hello_init);

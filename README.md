@@ -105,7 +105,7 @@ Here we apply a trivial patch, printing a simple message to kernel log, to linux
 Let's take a look at the patch.
 
 ```
-$ cat dev/kernel-patch/first/0001-Print-a-message-on-boot.patch 
+$ cat example/kernel-patch/first/0001-Print-a-message-on-boot.patch 
 From 93cc6bf35ed2850634cb1bcfe621b38d81c6ab25 Mon Sep 17 00:00:00 2001
 From: Satoru Takeuchi <satoru.takeuchi@gmail.com>
 Date: Wed, 14 Dec 2016 20:42:17 +0900
@@ -139,7 +139,7 @@ Make a kernel and boot it.
 $ cd linux
 $ git checkout -b test v4.9
 Switched to a new branch 'test'
-$ git am ../dev/kernel-patch/first/0001-Print-a-message-on-boot.patch 
+$ git am ../example/kernel-patch/first/0001-Print-a-message-on-boot.patch 
 Applying: Print a message on boot
 $ cd ../ktest
 $ ./ktest.pl
@@ -185,7 +185,7 @@ the simple module which just prints "Hello world!" on loading.
 Let's take a look at its source.
 
 ```
-$ cat dev/module/hello/hello.c
+$ cat example/module/hello/hello.c
 #include <linux/module.h>
 
 MODULE_LICENSE("GPL v2");
@@ -208,7 +208,7 @@ module_exit(hello_exit);
 Build this module.
 
 ```
-$ cd dev/module/hello
+$ cd example/module/hello
 $ make
 ...
 $ 

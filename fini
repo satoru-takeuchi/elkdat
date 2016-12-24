@@ -1,0 +1,9 @@
+#!/bin/bash
+
+pushd elkdat
+vagrant halt
+vagrant destroy ktest
+popd
+
+echo "Finished to cleanup."
+echo "Now it's safe to delete the source directory."

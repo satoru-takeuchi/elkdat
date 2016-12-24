@@ -21,13 +21,25 @@ Here is the required packages in debian.
 
 If you use other distros, please install corresponding packages.
 
-# How to install
+# How to initialize
 
 Just run `./init` underneath the top of this tool! 
 
 Please note that elkdat downloads whole linux kernel source repository in `./init`.
 If you already have it, please copy it underneath the top directory as "linux".
 In addition, elkdat flushes existing kernel, object files and so on by `mrproper`.
+
+# How to finalize
+
+Run the following command.
+
+```
+$ ./fini
+...
+Finished to cleanup.
+Now it's safe to delete the source directory.
+$ 
+```
 
 # Tutorial
 

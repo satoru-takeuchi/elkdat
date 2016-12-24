@@ -8,14 +8,7 @@ pushd elkdat
 vagrant up
 ln -sf $(vagrant ssh-config | grep IdentityFile | awk '{print $2}') ../
 HOST=$(vagrant ssh-config | grep HostName | awk '{print $2}')
-vagrant ssh -c 'sudo mkdir /root/.ssh; sudo cp /home/vagrant/.ssh/authorized_keys /root/.ssh/'
 popd
-
-# ktest setting (geust)
-SSH_CMD="ssh -i ./private_key root@${HOST}"
-${SSH_CMD} 'sed /etc/default/grub -i -e "/^GRUB_CMDLINE_LINUX_DEFAULT=/s/\"$/ console=ttyS0,115200n8\"/p"'
-${SSH_CMD} 'sed -e "s/@ROOT_UUID@/$(blkid -o value /dev/vda1 | sed -n -e 1p)/" /vagrant/ktest-grub-menuentry.template >/vagrant/ktest-grub-menuentry; cat /vagrant/ktest-grub-menuentry >>/etc/grub.d/40_custom'
-${SSH_CMD} update-grub
 
 # ktest setting (host)
 CONCURRENCY=$(($(grep -c processor /proc/cpuinfo) * 2))

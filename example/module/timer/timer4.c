@@ -8,7 +8,6 @@ MODULE_DESCRIPTION("timer kernel module: pass arg");
 struct mytimer_data {
 	char *name;
 	int interval;
-	int count;
 	struct timer_list timer;
 };
 

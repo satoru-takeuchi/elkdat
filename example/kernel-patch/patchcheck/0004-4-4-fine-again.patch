@@ -1,0 +1,25 @@
+From f80a34f377c1832d450dc0cc402288ee86ae2836 Mon Sep 17 00:00:00 2001
+From: Satoru Takeuchi <satoru.takeuchi@gmail.com>
+Date: Fri, 3 Feb 2017 23:22:57 +0900
+Subject: [PATCH 4/4] 4/4: fine again
+
+---
+ init/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/init/main.c b/init/main.c
+index ef1096b99225..4d109a7e819a 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -660,7 +660,7 @@ asmlinkage __visible void __init start_kernel(void)
+ 	pr_warn("1/4 patch is applied!\n");
+ 	pr_warn("2/4 patch is applied!\n");
+ 	pr_warn("3/4 patch is applied!\n");
+-	BUG();
++	pr_warn("4/4 patch is applied!\n");
+ 
+ 	/* Do the rest non-__init'ed, we're now alive */
+ 	rest_init();
+-- 
+2.11.0
+

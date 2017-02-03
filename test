@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -lt 1 ] ; then
-    echo "usage: $0 [build|install|boot|test]..." >&2
+    echo "usage: $0 <build|install|boot|test|patchcheck>..." >&2
     exit 1
 fi
 
@@ -23,8 +23,41 @@ case $SUBCOMMAND in
 	fi
 	TEST=$(realpath ${TEST})
     ;;
+    patchcheck)
+	if [ $# -lt 4 ] ; then
+	    echo "usage: $0 patchcheck <start> <end> [build|install|boot|test] [test path]" >&2
+	    echo "	<start>: the first patch of the test target patchset" >&2
+	    echo "	<end>: the last patch of the test target patchset" >&2
+	    exit 1
+	fi
+	PATCHCHECK_START=$2
+	PATCHCHECK_END=$3
+	PATCHCHECK_TYPE=$4
+	case $PATCHCHECK_TYPE in
+	    build|install|boot)
+	    ;;
+	    test)
+		if [ $# -lt 5 ] ; then
+		    echo "usage: $0 patchcheck <start> <end> test <test path>" >&2
+		    exit 1
+		fi
+		TEST=$2
+		if [ ! -f ${TEST} -o ! -x ${TEST} ] ; then
+		    echo "${TEST} should be executable test program" >&2
+		    exit 1
+		fi
+		TEST=$(realpath ${TEST})
+		;;
+	    *)
+		echo "usage: $0 patchcheck <start> <end> [build|install|boot|test] [test path]" >&2
+		echo "	<start>: the first patch of the test target patchset" >&2
+		echo "	<end>: the last patch of the test target patchset" >&2
+		exit 1		
+		;;
+	esac
+	;;
     *)
-	echo "subcommand shoulld be [build|install|boot|test]: ${SUBCOMMAND}" >&2
+	echo "subcommand shoulld be <build|install|boot|test|patchcheck>: ${SUBCOMMAND}" >&2
 	exit 1
     ;;
 esac
@@ -43,6 +76,14 @@ function modify_ktest_conf {
     case $SUBCOMMAND in
 	test)
 	    sed -i -e "\$aTEST = ${TEST}" $CONFFILE
+	    ;;
+	patchcheck)
+	    sed -i -e "\$aPATCHCHECK_START = ${PATCHCHECK_START}" $CONFFILE
+	    sed -i -e "\$aPATCHCHECK_END = ${PATCHCHECK_END}" $CONFFILE
+	    sed -i -e "\$aPATCHCHECK_TYPE = ${PATCHCHECK_TYPE}" $CONFFILE
+	    if [ $PATCHCHECK_TYPE = test ] ; then
+		sed -i -e "\$aTEST = ${TEST}" $CONFFILE
+	    fi
 	    ;;
     esac
 }

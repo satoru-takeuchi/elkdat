@@ -295,6 +295,7 @@ For example, the following command runs the example/test/hello after booting the
 
 ```
 $ ./test test example/test/hello
+...
 ** Monitor flushed **
 run test /home/sat/src/elkdat/example/test/hello
 /home/sat/src/elkdat/example/test/hello ... [0 seconds] SUCCESS
@@ -341,7 +342,104 @@ $
 
 ### Test your patchset one by one
 
-TBD
+If you're a kernel developer, you make and submit a patchset for each feature
+or bug fix. Of course you should test it before submitting it. Then testing the kernel,
+which applies whole patchset, is insufficient. You should test individual patches instead.
+It's because if a patch in your patchset has a BUG, it would corrupt git-bisect after
+applying your patchset. elkdat can test whole patchset one by one automatically.
+
+Here is the [example](https://github.com/satoru-takeuchi/elkdat/tree/master/example/kernel-patch/patchcheck)
+of a patchset consists of four patches and its 3rd one causes panic during boot.
+These patches are quite simple. Please take a look at each patches if you're interested in it.
+
+```
+$ git log --oneline -5 
+f80a34f377c1 4/4: fine again
+227ef171c7f5 3/4: BUG
+d662eff22070 2/4: fine
+925417fc1d36 1/4: fine
+69973b830859 Linux 4.9
+$ 
+```
+
+To test this patchset, run the follownig command.
+
+```
+$ ./test patchcheck 925417fc1d36 f80a34f377c1
+...
+Going to test the following commits:
+925417fc1d3670f994c26bb09369b5f6c02c60bb 1/4: fine
+d662eff220707c43c7bce87cf0343e27e67ce848 2/4: fine
+227ef171c7f59c570fb821a81581ef78eed5be89 3/4: BUG
+f80a34f377c1832d450dc0cc402288ee86ae2836 4/4: fine again
+
+Processing commit "925417fc1d3670f994c26bb09369b5f6c02c60bb 1/4: fine"
+...
+Build time:   6 minutes 58 seconds
+Install time: 8 seconds
+Reboot time:  21 seconds
+
+Processing commit "d662eff220707c43c7bce87cf0343e27e67ce848 2/4: fine"
+...
+** Monitor flushed **
+kill child process 30367
+closing!
+
+Build time:   1 minute 15 seconds
+Install time: 9 seconds
+Reboot time:  19 seconds
+
+Processing commit "227ef171c7f59c570fb821a81581ef78eed5be89 3/4: BUG"
+
+[    0.135879] ftrace: allocating 32412 entries in 127 pages
+[    0.163806] 1/4 patch is applied!
+[    0.164408] 2/4 patch is applied!
+[    0.164933] 3/4 patch is applied!
+[    0.165469] ------------[ cut here ]------------
+[    0.166151] kernel BUG at /home/sat/src/elkdat/linux/init/main.c:663!
+[    0.167041] invalid opcode: 0000 [#1] SMP
+[    0.167647] Modules linked in:
+[    0.168216] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 4.9.0-ktest+ #3
+[    0.169076] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.9.3-20161025_171302-gandalf 04/01/2014
+[    0.170451] task: ffffffff8ee0e540 task.stack: ffffffff8ee00000
+[    0.171254] RIP: 0010:[<ffffffff8ef81fd9>]  [<ffffffff8ef81fd9>] start_kernel+0x460/0x462
+[    0.172501] RSP: 0000:ffffffff8ee03f50  EFLAGS: 00010282
+[    0.173241] RAX: 0000000000000015 RBX: ffffffffffffffff RCX: ffffffff8ee54108
+[    0.174175] RDX: 0000000000000000 RSI: 0000000000000246 RDI: 0000000000000246
+[    0.175109] RBP: ffffffff8ee03f80 R08: 0000000000000000 R09: 0000000000000000
+[    0.176043] R10: ffff9b179ffd7000 R11: 0000000000000098 R12: ffff9b179ffd06c0
+[    0.176987] R13: ffffffff8f030840 R14: ffffffff8f03d2e0 R15: 000000000008a000
+[    0.177924] FS:  0000000000000000(0000) GS:ffff9b179fc00000(0000) knlGS:0000000000000000
+[    0.179070] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    0.179853] CR2: 00000000ffffffff CR3: 0000000013e07000 CR4: 00000000000406f0
+[    0.180831] Stack:
+[    0.181216]  ffffffff8f03d2e0 0000000000000000 000000000000008e 0000ffffffff8ef8
+[    0.182537]  0000000000000020 ffffffff8ef81120 ffffffff8ee03f90 ffffffff8ef812ca
+[    0.183854]  ffffffff8ee03fe8 ffffffff8ef81419 00000000ffffffff 8ef88e0000101117
+[    0.185206] Call Trace:
+[    0.185639]  [<ffffffff8ef81120>] ? early_idt_handler_array+0x120/0x120
+[    0.186521]  [<ffffffff8ef812ca>] x86_64_start_reservations+0x24/0x26
+[    0.187383]  [<ffffffff8ef81419>] x86_64_start_kernel+0x14d/0x170
+[    0.188228] Code: 02 00 e8 b7 b1 02 00 48 c7 c7 5d 13 c5 8e e8 e6 a2 21 ff 48 c7 c7 76 13 c5 8e e8 da a2 21 ff 48 c7 c7 8f 13 c5 8e e8 ce a2 21 ff <0f> 0b 31 c0 80 3f 00 55 48 89 e5 75 0f c7 05 4c 80 17 00 01 00 
+[    0.194669] RIP  [<ffffffff8ef81fd9>] start_kernel+0x460/0x462
+[    0.195523]  RSP <ffffffff8ee03f50>
+[    0.196097] ---[ end trace f68728a0d3053b52 ]---
+[    0.196776] Kernel panic - not syncing: Attempted to kill the idle task!
+[    0.197707] ---[ end Kernel panic - not syncing: Attempted to kill the idle task!
+bug timed out after 1 seconds
+Test forced to stop after 60 seconds after failure
+CRITICAL FAILURE... failed - got a bug report
+REBOOTING
+ssh -i /home/sat/src/elkdat/private_key root@192.168.121.181 sync ... [18 seconds] FAILED!
+ssh -i /home/sat/src/elkdat/private_key root@192.168.121.181 reboot; ... ssh: connect to host 192.168.121.181 port 22: No route to host
+[3 seconds] SUCCESS
+ See /home/sat/src/elkdat/ktest/ktest.log for more info.
+failed - got a bug report
+$ 
+```
+
+Fails on testing 3/4 patch. We succeeded.
+
 
 ### Find which commit introduce a bug by bysect
 

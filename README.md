@@ -70,7 +70,7 @@ $
 Let's login to test VM to confirm whether it works correctly.
 
 ```
-$ cd ../elkdat
+$ cd elkdat
 $ vagrant ssh
 ...
 vagrant@packer-qemu:~$ uname -r

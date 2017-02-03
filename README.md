@@ -284,13 +284,71 @@ please restore the configuration file by `ktest/minconfig{.bak,}`.
 
 In addition to build, install, and boot your own kernel, elkdat has the following features.
 
-- Run your own tests
-- Test your patchset one by one
-- Find which commit introduce a bug by bysect
+### Run your own tests
 
-All of them are fully automated.
+Run the following command.
+```
+$ ./test test <the path of your own test>
+```
 
-In fact, these features are not elkdat's own feature, _ktest_'s feature.
-elkdat uses ktest as backend.
+For example, the following command runs the example/test/hello after booting the system.
+
+```
+$ ./test test example/test/hello
+** Monitor flushed **
+run test /home/sat/src/elkdat/example/test/hello
+/home/sat/src/elkdat/example/test/hello ... [0 seconds] SUCCESS
+kill child process 18446
+closing!
+
+Build time:   6 minutes 53 seconds
+Install time: 8 seconds
+Reboot time:  17 seconds
+Test time:    1 second
+
+
+
+*******************************************
+*******************************************
+KTEST RESULT: TEST 1 SUCCESS!!!!         **
+*******************************************
+*******************************************
+
+    1 of 1 tests were successful
+
+$ 
+```
+
+example/test/hello's output is in ktest/ktest.log.
+
+Here is the result of running example/test/false, it always fails.
+
+```
+$ ./test test example/test/fail
+...
+** Monitor flushed **
+run test /home/sat/src/elkdat/example/test/fail
+/home/sat/src/elkdat/example/test/fail ... [0 seconds] FAILED!
+CRITICAL FAILURE... test failed
+REBOOTING
+ssh -i /home/sat/src/elkdat/private_key root@192.168.121.181 sync ... [1 second] SUCCESS
+ssh -i /home/sat/src/elkdat/private_key root@192.168.121.181 reboot; ... Connection to 192.168.121.181 closed by remote host.
+[0 seconds] SUCCESS
+ See /home/sat/src/elkdat/ktest/ktest.log for more info.
+test failed
+$ 
+```
+
+### Test your patchset one by one
+
+TBD
+
+### Find which commit introduce a bug by bysect
+
+TBD
+
+### Others 
+
+./test works as a wrapper of _ktest_, a kernel auto test tool. 
 Please refer to [linux kernel auto test by using ktest](http://www.slideshare.net/satorutakeuchi18/kernel-auto-testbyktest)
-to how to setup ktest.
+for more information about ktest.

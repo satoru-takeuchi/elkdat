@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -lt 1 ] ; then
-    echo "usage: $0 <build|install|boot>" >&2
+    echo "usage: $0 [build|install|boot|test]..." >&2
     exit 1
 fi
 
@@ -10,8 +10,21 @@ SUBCOMMAND=$1
 case $SUBCOMMAND in
     build|install|boot)
     ;;
+    test)
+	if [ $# -lt 2 ] ; then
+	    echo "usage: $0 test <test path>" >&2
+	    exit 1
+	fi
+
+	TEST=$2
+	if [ ! -f ${TEST} -o ! -x ${TEST} ] ; then
+	    echo "${TEST} should be executable test program" >&2
+	    exit 1
+	fi
+	TEST=$(realpath ${TEST})
+    ;;
     *)
-	echo "subcommand shoulld be one of build, install, and boot: $SUBCOMMAND" >&2
+	echo "subcommand shoulld be [build|install|boot|test]: ${SUBCOMMAND}" >&2
 	exit 1
     ;;
 esac
@@ -26,9 +39,11 @@ function modify_ktest_conf {
     sed -i -e '/^TEST_START/,$s/^/# /' $CONFFILE
     sed -i -e '$aTEST_START' $CONFFILE
 
+    sed -i -e "\$aTEST_TYPE = ${SUBCOMMAND}" $CONFFILE
     case $SUBCOMMAND in
-	build|install|boot)
-	    sed -i -e "\$aTEST_TYPE = ${SUBCOMMAND}" $CONFFILE
+	test)
+	    sed -i -e "\$aTEST = ${TEST}" $CONFFILE
+	    ;;
     esac
 }
 

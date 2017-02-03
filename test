@@ -1,0 +1,42 @@
+#!/bin/bash
+
+if [ $# -lt 1 ] ; then
+    echo "usage: $0 <build|install|boot>" >&2
+    exit 1
+fi
+
+CONFFILE=ktest.conf
+SUBCOMMAND=$1
+case $SUBCOMMAND in
+    build|install|boot)
+    ;;
+    *)
+	echo "subcommand shoulld be one of build, install, and boot: $SUBCOMMAND" >&2
+	exit 1
+    ;;
+esac
+
+trap "_cleanup ; exit 0" 0 1 2 3 15
+
+function _cleanup {
+    restore_ktest_conf
+}
+
+function modify_ktest_conf {
+    sed -i -e '/^TEST_START/,$s/^/# /' $CONFFILE
+    sed -i -e '$aTEST_START' $CONFFILE
+
+    case $SUBCOMMAND in
+	build|install|boot)
+	    sed -i -e "\$aTEST_TYPE = ${SUBCOMMAND}" $CONFFILE
+    esac
+}
+
+function restore_ktest_conf {
+    sed -i -e '/^TEST_START/,$d' $CONFFILE
+    sed -i -e '/^# TEST_START/,$s/^# //' $CONFFILE
+}
+
+cd ktest
+modify_ktest_conf
+./ktest.pl

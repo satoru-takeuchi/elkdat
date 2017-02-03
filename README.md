@@ -53,8 +53,8 @@ just by the following several commands.
 ```
 $ cd linux
 $ git checkout v4.9
-$ cd ../ktest
-$ ./ktest.pl
+$ cd ../
+$ ./test boot
 ...
 *******************************************
 *******************************************
@@ -110,6 +110,9 @@ $
 You can boot the any kernel version by changing the above mentioned _v4.9_ in
 `git checkout` command to any tag or to any commit ID.
 
+If it's OK to just build or just install your own kernel rather than booting it,
+Please use `./test build` or `./test install` instead of `./test boot`.
+
 ## Run your own kernel (change source)
 
 Here we apply a trivial patch, printing a simple message to kernel log, to linux v4.9 and boot it.
@@ -153,8 +156,7 @@ $ git checkout -b test v4.9
 Switched to a new branch 'test'
 $ git am ../example/kernel-patch/first/0001-Print-a-message-on-boot.patch 
 Applying: Print a message on boot
-$ cd ../ktest
-$ ./ktest.pl
+$ ./test boot
 ...
 *******************************************
 *******************************************
@@ -262,7 +264,7 @@ Succeeded!
 ## Change the kernel configuration
 
 You can change the kernel configuration, for example for enable a file system disabled by default,
-by executing the following commands before running `./ktest.pl`.
+by executing the following commands before running `./test`.
 
 ```
 $ cp ktest/minconfig{,.bak}

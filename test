@@ -41,7 +41,7 @@ case $SUBCOMMAND in
 		    echo "usage: $0 patchcheck <start> <end> test <test path>" >&2
 		    exit 1
 		fi
-		TEST=$2
+		TEST=$5
 		if [ ! -f ${TEST} -o ! -x ${TEST} ] ; then
 		    echo "${TEST} should be executable test program" >&2
 		    exit 1

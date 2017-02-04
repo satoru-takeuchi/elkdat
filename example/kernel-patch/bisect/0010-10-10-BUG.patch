@@ -1,0 +1,26 @@
+From e617cb9e8cc0b49a507bc2fd2840fb803da00436 Mon Sep 17 00:00:00 2001
+From: Satoru Takeuchi <satoru.takeuchi@gmail.com>
+Date: Sat, 4 Feb 2017 21:02:17 +0900
+Subject: [PATCH 10/10] 10/10: BUG
+
+---
+ init/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/init/main.c b/init/main.c
+index d48ad379d563..fa02b72f45ea 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -666,7 +666,8 @@ asmlinkage __visible void __init start_kernel(void)
+ 	BUG();
+ 	pr_warn("7/10 patch is applied!\n");
+ 	pr_warn("8/10 patch is applied!\n");
+-	pr_warn("9/10 patch is applied!\n");	
++	pr_warn("9/10 patch is applied!\n");
++	pr_warn("9/10 patch is applied!\n");
+ 
+ 	/* Do the rest non-__init'ed, we're now alive */
+ 	rest_init();
+-- 
+2.11.0
+

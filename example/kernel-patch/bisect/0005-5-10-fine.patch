@@ -1,0 +1,24 @@
+From f4504cce28bcb56b15df0c936e1598cb733f1658 Mon Sep 17 00:00:00 2001
+From: Satoru Takeuchi <satoru.takeuchi@gmail.com>
+Date: Sat, 4 Feb 2017 20:59:20 +0900
+Subject: [PATCH 05/10] 5/10: fine
+
+---
+ init/main.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/init/main.c b/init/main.c
+index 82fbda8baab2..c11c10d80ac3 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -661,6 +661,7 @@ asmlinkage __visible void __init start_kernel(void)
+ 	pr_warn("2/10 patch is applied!\n");
+ 	pr_warn("3/10 patch is applied!\n");
+ 	pr_warn("4/10 patch is applied!\n");
++	pr_warn("5/10 patch is applied!\n");
+ 
+ 	/* Do the rest non-__init'ed, we're now alive */
+ 	rest_init();
+-- 
+2.11.0
+

@@ -1,0 +1,24 @@
+From ee916bd4a2a89c554ada96921d147c6c36023b39 Mon Sep 17 00:00:00 2001
+From: Satoru Takeuchi <satoru.takeuchi@gmail.com>
+Date: Sat, 4 Feb 2017 20:58:39 +0900
+Subject: [PATCH 03/10] 3/10: fine
+
+---
+ init/main.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/init/main.c b/init/main.c
+index 17a1a7f8113b..c25c4cce4c6a 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -659,6 +659,7 @@ asmlinkage __visible void __init start_kernel(void)
+ 	ftrace_init();
+ 	pr_warn("1/10 patch is applied!\n");
+ 	pr_warn("2/10 patch is applied!\n");
++	pr_warn("3/10 patch is applied!\n");	
+ 
+ 	/* Do the rest non-__init'ed, we're now alive */
+ 	rest_init();
+-- 
+2.11.0
+

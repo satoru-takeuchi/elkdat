@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -lt 1 ] ; then
-    echo "usage: $0 <build|install|boot|test|patchcheck>..." >&2
+    echo "usage: $0 <build|install|boot|test|patchcheck|bisect>..." >&2
     exit 1
 fi
 
@@ -56,8 +56,41 @@ case $SUBCOMMAND in
 		;;
 	esac
 	;;
+    bisect)
+	if [ $# -lt 4 ] ; then
+	    echo "usage: $0 bisect <good> <bad> [build|install|boot|test] [test path]" >&2
+	    echo "	<good>: the patch which passes test" >&2
+	    echo "	<bad>: the patthc which fails test" >&2
+	    exit 1
+	fi
+	BISECT_GOOD=$2
+	BISECT_BAD=$3
+	BISECT_TYPE=$4
+	case $BISECT_TYPE in
+	    build|install|boot)
+	    ;;
+	    test)
+		if [ $# -lt 5 ] ; then
+		    echo "usage: $0 bisect <good> <bad> test <test path>" >&2
+		    exit 1
+		fi
+		TEST=$5
+		if [ ! -f ${TEST} -o ! -x ${TEST} ] ; then
+		    echo "${TEST} should be executable test program" >&2
+		    exit 1
+		fi
+		TEST=$(realpath ${TEST})
+		;;
+	    *)
+		echo "usage: $0 bisect <good> <bad> [build|install|boot|test] [test path]" >&2
+		echo "	<good>: the patch which passes test" >&2
+		echo "	<bad>: the patthc which fails test" >&2
+		exit 1
+		;;
+	esac
+	;;
     *)
-	echo "subcommand shoulld be <build|install|boot|test|patchcheck>: ${SUBCOMMAND}" >&2
+	echo "subcommand shoulld be <build|install|boot|test|patchcheck|bisect>: ${SUBCOMMAND}" >&2
 	exit 1
     ;;
 esac
@@ -85,6 +118,14 @@ function modify_ktest_conf {
 		sed -i -e "\$aTEST = ${TEST}" $CONFFILE
 	    fi
 	    ;;
+	bisect)
+	    sed -i -e "\$aBISECT_GOOD = ${BISECT_GOOD}" $CONFFILE
+	    sed -i -e "\$aBISECT_BAD = ${BISECT_BAD}" $CONFFILE
+	    sed -i -e "\$aBISECT_TYPE = ${BISECT_TYPE}" $CONFFILE
+	    if [ $BISECT_TYPE = test ] ; then
+		sed -i -e "\$aTEST = ${TEST}" $CONFFILE
+	    fi
+	    ;;	    
     esac
 }
 

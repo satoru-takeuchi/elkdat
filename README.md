@@ -443,7 +443,72 @@ Fails on testing 3/4 patch. We succeeded.
 
 ### Find which commit introduce a bug by bysect
 
-TBD
+If you found a kernel didn't work and you also know which kernel worked fine,
+`./test bisect` can be used to detect the wrong commit. It works as `git bisect`[1].
+It's difficult to use `git bisect` directly in kernel development since it requires to
+reboot whole system on test one commit.
+
+[1]: Please refer to `man 1 git-bisect` if you don't know about this command.
+
+Here is the [example](https://github.com/satoru-takeuchi/elkdat/tree/master/example/kernel-patch/bisect)
+of a patchset consists of ten patches and its 6th one causes panic during boot.
+These patches are quite simple. Please take a look at each patches if you're interested in it.
+
+```
+$ git log --oneline -11
+e617cb9e8cc0 10/10: BUG
+d5159dda90f5 9/10: BUG
+ddd7cdeacf47 8/10: BUG
+9f6c5fbcd327 7/10: BUG
+966f935e572c 6/10: BUG
+f4504cce28bc 5/10: fine
+cacbea15ec6a 4/10: fine
+ee916bd4a2a8 3/10: fine
+b61a82b33071 2/10: fine
+5b762eff2275 1/10: fine
+69973b830859 Linux 4.9
+```
+
+To find bad commit which introduce a bug, so it's 6/10 patch, run the following command.
+
+```
+$ ./test bisect 5b762eff2275 e617cb9e8cc0 boot
+...
+RUNNING TEST 1 of 1 with option bisect boot
+
+git rev-list --max-count=1 5b762eff2275 ... SUCCESS
+git rev-list --max-count=1 e617cb9e8cc0 ... SUCCESS
+git bisect start ... [0 seconds] SUCCESS
+git bisect good 5b762eff2275a414938275c00ccae7d2847f10b4 ... [0 seconds] SUCCESS
+git bisect bad e617cb9e8cc0b49a507bc2fd2840fb803da00436 ... SUCCESS
+Bisecting: 4 revisions left to test after this (roughly 2 steps) [f4504cce28bcb56b15df0c936e1598cb733f1658]
+...
+git bisect good ... SUCCESS
+Bisecting: 2 revisions left to test after this (roughly 1 step) [9f6c5fbcd3276216291f60f41504bab6003c95e6]
+...
+git bisect bad ... SUCCESS
+Bisecting: 0 revisions left to test after this (roughly 0 steps) [966f935e572c728f17877ab8a8fac454e04deda6]
+...
+...
+git bisect bad ... SUCCESS
+Found bad commit... 966f935e572c728f17877ab8a8fac454e04deda6
+...
+Bad commit was [966f935e572c728f17877ab8a8fac454e04deda6]
+
+
+
+*******************************************
+*******************************************
+KTEST RESULT: TEST 1 SUCCESS!!!!         **
+*******************************************
+*******************************************
+
+    1 of 1 tests were successful
+
+$ 
+```
+
+We successfully detected a correct bad commit, 6/10.
 
 ### Others 
 

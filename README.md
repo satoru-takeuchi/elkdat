@@ -444,11 +444,11 @@ Fails on testing 3/4 patch. We succeeded.
 ### Find which commit introduce a bug by bysect
 
 If you found a kernel didn't work and you also know which kernel worked fine,
-`./test bisect` can be used to detect the wrong commit. It works as `git bisect`[1].
+`./test bisect` can be used to detect the wrong commit. It works as `git bisect`[^1].
 It's difficult to use `git bisect` directly in kernel development since it requires to
 reboot whole system on test one commit.
 
-[1]: Please refer to `man 1 git-bisect` if you don't know about this command.
+[^1]: Please refer to `man 1 git-bisect` if you don't know about this command.
 
 Here is the [example](https://github.com/satoru-takeuchi/elkdat/tree/master/example/kernel-patch/bisect)
 of a patchset consists of ten patches and its 6th one causes panic during boot.

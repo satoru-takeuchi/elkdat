@@ -28,7 +28,7 @@ static void mylist_add_tail(int n) {
 }
 
 static void mylist_del_head(void) {
-	struct mylist_entry *e = list_entry(mylist.next, struct mylist_entry, list);
+	struct mylist_entry *e = list_first_entry(&mylist, struct mylist_entry, list);
 	int n = e->n;
 	list_del(&e->list);
 	kfree(e);

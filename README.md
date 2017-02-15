@@ -231,9 +231,7 @@ $
 Copy it to the test VM.
 
 ```
-$ cp hello.ko ../../../elkdat
-$ cd ../../../elkdat
-$ vagrant rsync
+$ make install
 ...
 $ 
 ```
@@ -242,7 +240,7 @@ Load it. Please not that it only succeed if the test VM is booted with
 your own kernel.
 
 ```
-$ vagrant ssh
+$ make login
 ...
 vagrant@packer-qemu:~$ sudo su
 root@packer-qemu:/home/vagrant# insmod /vagrant/hello.ko

@@ -92,7 +92,6 @@ static ssize_t pop_read(struct file *f, char __user *buf, size_t len, loff_t *pp
 {
 	int n;
 	
-	pr_alert("pop_read() is called\n");
 	if (*ppos || mystack_pop(&n) == -1)
 		return 0;
 	snprintf(testbuf, sizeof(testbuf), "%d\n", n);

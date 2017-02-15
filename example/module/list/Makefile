@@ -1,6 +1,6 @@
 .PHONY: all clean
 
-obj-m := list1.o
+obj-m := list1.o list2.o
 
 all:
 	make -C ../../../output M=$(PWD) modules

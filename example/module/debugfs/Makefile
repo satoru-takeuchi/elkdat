@@ -1,4 +1,4 @@
-.PHONY: all clean install
+.PHONY: all clean install login
 
 obj-m := debugfs1.o debugfs2.o debugfs3.o
 
@@ -10,3 +10,6 @@ clean:
 
 install:
 	cp *.ko ../../../elkdat; cd ../../../elkdat; vagrant rsync
+
+login:
+	cd ../../../elkdat; vagrant ssh

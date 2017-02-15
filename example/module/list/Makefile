@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: all clean install
 
 obj-m := list1.o list2.o
 
@@ -7,3 +7,6 @@ all:
 
 clean:
 	make -C ../../../linux M=$(PWD) clean
+
+install:
+	cp *.ko ../../../elkdat; cd ../../../elkdat; vagrant rsync

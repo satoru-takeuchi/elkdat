@@ -38,7 +38,7 @@ static ssize_t mytimer_remain_msecs_write(struct file *f, const char __user *buf
 	ret = simple_write_to_buffer(testbuf, sizeof(testbuf), ppos, buf, len);
 	if (ret < 0)
 		return ret;
-	sscanf(buf, "%20lu", &mytimer_timeout_msecs);
+	sscanf(testbuf, "%20lu", &mytimer_timeout_msecs);
 	mod_timer(&mytimer, jiffies + mytimer_timeout_msecs * HZ / 1000);
 	return ret;
 }

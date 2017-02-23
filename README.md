@@ -1,8 +1,11 @@
 # elkdat
+
 easy linux kernel development and auto-test tool
 
-elkdat prepares linux kernel source and a VM, and setting these properly
-for linux kernel development/auto-testing.
+elkdat automatically setups linux kernel source repository and a VM for
+linux kernel development and test. In addition, it can build, install,
+boot, run your own tests, test the all patches in a patchset, and find
+a problematic commit with bisect by just one command.
 
 It's useful not only for experienced linux kernel developers, but also for
 kernel newbies and non-developers who'd like to test linux kernel.
@@ -23,7 +26,7 @@ If you use other distros, please install corresponding packages.
 
 # How to initialize
 
-Just run `./init` underneath the top of this tool! 
+Just run `./init` underneath the top of this tool.
 
 Please note that elkdat downloads whole linux kernel source repository in `./init`.
 If you already have it, please copy it underneath the top directory as "linux".

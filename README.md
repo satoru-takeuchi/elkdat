@@ -12,15 +12,18 @@ kernel newbies and non-developers who'd like to test linux kernel.
 
 # Required packages
 
-Here is the required packages in debian.
+You should install some packages before installing elkdat. Here is how to install them on Ubuntu 16.04.
 
-- git
-- vagrant
-- kernel-package
-- vagrant-libvirt
-- qemu-kvm
-- libvirt-daemon
-- libvirt-clients
+```
+# apt-get install git vagrant libvirt-bin libvirt-dev kernel-package qemu-kvm libssl-dev libncurses5-dev
+```
+
+In addition to install the above mentioned package, you need to install vagrant-libvirt plugin for vagrant as follows.
+
+```
+$ sudo sed -i'' "s/Specification.all = nil/Specification.reset/" /usr/lib/ruby/vendor_ruby/vagrant/bundler.rb         # See https://github.com/vagrant-libvirt/vagrant-libvirt/issues/575 for more details about this patching
+$ vagrant plugin install vagrant-libvirt
+```
 
 If you use other distros, please install corresponding packages.
 

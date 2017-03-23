@@ -16,6 +16,11 @@ You should install some packages before installing elkdat. Here is how to instal
 
 ```
 $ sudo apt-get install git vagrant libvirt-bin libvirt-dev kernel-package qemu-kvm libssl-dev libncurses5-dev
+```
+
+Log out and back in here.
+
+```
 $ sudo sed -i'' "s/Specification.all = nil/Specification.reset/" /usr/lib/ruby/vendor_ruby/vagrant/bundler.rb         # See https://github.com/vagrant-libvirt/vagrant-libvirt/issues/575 for more details about this patching
 $ vagrant plugin install vagrant-libvirt
 ```

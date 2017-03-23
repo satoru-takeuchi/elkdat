@@ -369,7 +369,7 @@ $
 To test this patchset, run the follownig command.
 
 ```
-$ ./test patchcheck 925417fc1d36 f80a34f377c1
+$ ./test patchcheck 925417fc1d36 f80a34f377c1 boot
 ...
 Going to test the following commits:
 925417fc1d3670f994c26bb09369b5f6c02c60bb 1/4: fine

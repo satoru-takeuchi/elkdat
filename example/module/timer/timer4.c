@@ -34,7 +34,7 @@ static void mytimer_fn(unsigned long arg)
 	mod_timer(&data->timer, jiffies + data->interval*HZ);
 }
 
-static int timer_module_init(void)
+static int mymodule_init(void)
 {
 	int i;
 
@@ -50,7 +50,7 @@ static int timer_module_init(void)
 	return 0;
 }
 
-static void timer_module_exit(void)
+static void mymodule_exit(void)
 {
 	int i;
 
@@ -59,5 +59,5 @@ static void timer_module_exit(void)
 	}
 }
 
-module_init(timer_module_init);
-module_exit(timer_module_exit);
+module_init(mymodule_init);
+module_exit(mymodule_exit);

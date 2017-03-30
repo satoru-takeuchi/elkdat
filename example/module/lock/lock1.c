@@ -4,7 +4,7 @@
 
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Satoru Takeuchi");
-MODULE_DESCRIPTION("a example of mutual exclusion by using spinlock");
+MODULE_DESCRIPTION("a example of mutual exclusion by using mutex");
 
 struct mystack_entry {
 	struct list_head list;

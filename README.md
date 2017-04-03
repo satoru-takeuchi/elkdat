@@ -10,9 +10,17 @@ a problematic commit with bisect by just one command.
 It's useful not only for experienced linux kernel developers, but also for
 kernel newbies and non-developers who'd like to test linux kernel.
 
-# Required packages
+# Prerequisite environment
 
-You should install some packages before installing elkdat. Here is how to install them on Ubuntu 16.04.
+本書に記載されているコードを実際に試すためには、仮想化機能が有効になっているPC(仮想マシンは不可)にインストールされたUbuntuなどのLinuxディストリビューションが必要です。仮想化機能が有効になっているかどうかは、shellから以下のプログラムを実行すればわかります。マッチする行があれば仮想化機能は有効です。
+
+You need to have a Linux system with virtualization feature. It the following command shows one or more lines, yoor machine has that feature.
+
+```
+$ egrep '^flags.*(vmx|svm)' /proc/cpuinfo
+```
+
+You should install some packages before initializing elkdat. Here is how to install them on Ubuntu 16.04.
 
 ```
 $ sudo apt-get install git vagrant libvirt-bin libvirt-dev kernel-package qemu-kvm libssl-dev libncurses5-dev

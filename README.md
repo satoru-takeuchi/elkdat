@@ -12,8 +12,6 @@ kernel newbies and non-developers who'd like to test linux kernel.
 
 # Prerequisite environment
 
-本書に記載されているコードを実際に試すためには、仮想化機能が有効になっているPC(仮想マシンは不可)にインストールされたUbuntuなどのLinuxディストリビューションが必要です。仮想化機能が有効になっているかどうかは、shellから以下のプログラムを実行すればわかります。マッチする行があれば仮想化機能は有効です。
-
 You need to have a Linux system with virtualization feature. It the following command shows one or more lines, yoor machine has that feature.
 
 ```

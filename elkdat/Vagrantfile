@@ -75,7 +75,7 @@ Vagrant.configure("2") do |config|
      apt-get -y update
      mkdir /root/.ssh
      cp /home/vagrant/.ssh/authorized_keys /root/.ssh/
-     sed /etc/default/grub -i -e "/^GRUB_CMDLINE_LINUX_DEFAULT=/s/\"$/ console=ttyS0,115200n8\"/p"
+     sed /etc/default/grub -i -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/s/"$/ console=ttyS0,115200n8"/'
      sed -e "s/@ROOT_UUID@/$(blkid -o value /dev/vda1 | sed -n -e 1p)/" /vagrant/ktest-grub-menuentry.template >/vagrant/ktest-grub-menuentry; cat /vagrant/ktest-grub-menuentry >>/etc/grub.d/40_custom
      update-grub
    SHELL

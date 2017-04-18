@@ -7,8 +7,12 @@ fi
 
 CONFFILE=ktest.conf
 SUBCOMMAND=$1
+BOOT_VM_IF_NECESSARY=1
 case $SUBCOMMAND in
-    build|install|boot)
+    build|install)
+	BOOT_VM_IF_NECESSARY=0
+    ;;
+    boot)
     ;;
     test)
 	if [ $# -lt 2 ] ; then
@@ -34,7 +38,9 @@ case $SUBCOMMAND in
 	PATCHCHECK_END=$3
 	PATCHCHECK_TYPE=$4
 	case $PATCHCHECK_TYPE in
-	    build|install|boot)
+	    build|install)
+	    BOOT_VM_IF_NECESSARY=0
+	    boot)
 	    ;;
 	    test)
 		if [ $# -lt 5 ] ; then
@@ -67,7 +73,10 @@ case $SUBCOMMAND in
 	BISECT_BAD=$3
 	BISECT_TYPE=$4
 	case $BISECT_TYPE in
-	    build|install|boot)
+	    build|install)
+		BOOT_VM_IF_NECESSARY=0
+	    ;;
+	    boot)
 	    ;;
 	    test)
 		if [ $# -lt 5 ] ; then
@@ -134,6 +143,20 @@ function restore_ktest_conf {
     sed -i -e '/^# TEST_START/,$s/^# //' $CONFFILE
 }
 
-cd ktest
+pushd ktest
 modify_ktest_conf
+popd
+
+if [ $BOOT_VM_IF_NECESSARY -eq 1 ] ; then
+    IS_VM_DOWN=0
+    pushd elkdat
+    vagrant status | grep ktest | grep -q shutoff && IS_VM_DOWN=1
+    if [ $IS_VM_DOWN -eq 1 ] ; then
+	vagrant up
+    fi
+    popd
+fi
+
+pushd ktest
 ./ktest.pl
+popd

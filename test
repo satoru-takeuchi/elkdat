@@ -40,6 +40,7 @@ case $SUBCOMMAND in
 	case $PATCHCHECK_TYPE in
 	    build|install)
 	    BOOT_VM_IF_NECESSARY=0
+	    ;;
 	    boot)
 	    ;;
 	    test)

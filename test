@@ -140,8 +140,10 @@ function modify_ktest_conf {
 }
 
 function restore_ktest_conf {
+    pushd ktest
     sed -i -e '/^TEST_START/,$d' $CONFFILE
     sed -i -e '/^# TEST_START/,$s/^# //' $CONFFILE
+    popd
 }
 
 pushd ktest

@@ -71,7 +71,7 @@ Bringing machine 'ktest' up with 'libvirt' provider...
 $ 
 ```
 
-Please note that test VM is already up just after build.
+Please note that test VM is already up just after running init command.
 
 
 After that, you can login to test VM as follows.

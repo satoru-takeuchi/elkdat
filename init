@@ -11,7 +11,7 @@ HOST=$(vagrant ssh-config | grep HostName | awk '{print $2}')
 popd
 
 # ktest setting (host)
-CONCURRENCY=$(($(grep -c processor /proc/cpuinfo) * 2))
+CONCURRENCY=$(grep -c processor /proc/cpuinfo)
 DOMAIN_ID=$(cat elkdat/.vagrant/machines/ktest/libvirt/id)
 
 sed -e "s/@MACHINE@/$HOST/" \

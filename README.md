@@ -54,6 +54,64 @@ Now it's safe to delete the source directory.
 $ 
 ```
 
+# Managing test VM
+
+You can boot test VM as follows.
+
+```
+$ ./up
+Bringing machine 'ktest' up with 'libvirt' provider...
+==> ktest: Starting domain.
+==> ktest: Waiting for domain to get an IP address...
+==> ktest: Waiting for SSH to become available...
+==> ktest: Creating shared folders metadata...
+==> ktest: Rsyncing folder: /home/sat/src/elkdat/elkdat/ => /vagrant
+==> ktest: Machine already provisioned. Run `vagrant provision` or use the `--provision`
+==> ktest: flag to force provisioning. Provisioners marked to run always will still run.
+$ 
+```
+
+Please note that test VM is already up just after build.
+
+
+After that, you can login to test VM as follows.
+
+```
+$ ./login 
+Welcome to Ubuntu 16.04.2 LTS (GNU/Linux 4.4.0-72-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+Last login: Thu Jun  1 21:18:26 2017 from 192.168.121.1
+vagrant@packer-qemu:~$ 
+```
+
+You can shutdown test VM as follows.
+
+```
+$ ./halt
+==> ktest: Halting domain...
+$ 
+```
+
+You can also reboot test VM as follows.
+
+
+```
+$ ./reload
+==> ktest: Halting domain...
+==> ktest: Starting domain.
+==> ktest: Waiting for domain to get an IP address...
+==> ktest: Waiting for SSH to become available...
+==> ktest: Creating shared folders metadata...
+==> ktest: Rsyncing folder: /home/sat/src/elkdat/elkdat/ => /vagrant
+==> ktest: Machine already provisioned. Run `vagrant provision` or use the `--provision`
+==> ktest: flag to force provisioning. Provisioners marked to run always will still run.
+$ 
+
+```
+
 # Tutorial
 
 From here, we assume the current directory is underneath the top directory.
@@ -83,8 +141,7 @@ $
 Let's login to test VM to confirm whether it works correctly.
 
 ```
-$ cd elkdat
-$ vagrant ssh
+$ ./login
 ...
 vagrant@packer-qemu:~$ uname -r
 4.9.0-ktest
@@ -95,19 +152,14 @@ Finally we restarts the previous (probably the distro's) kernel.
 
 ```
 vagrant@packer-qemu:~$ exit
-$ vagrant halt
-...
-$ vagrant reload
-...
-$ cd ../
+$ ./reload
 $ 
 ```
 
 You can use your own kernel again by the following commands.
 
 ```
-$ cd elkdat
-$ vagrant ssh 
+$ ./login
 ...
 vagrant@packer-qemu:~$ sudo su 
 root@packer-qemu:/home/vagrant# grub-reboot ktest
@@ -115,7 +167,7 @@ root@packer-qemu:/home/vagrant# exit
 exit 
 vagrant@packer-qemu:~$ exit
 ...
-$ vagrant reload 
+$ ./reload
 ...
 $ 
 ```

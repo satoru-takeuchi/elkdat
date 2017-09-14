@@ -1,9 +1,34 @@
 #!/bin/bash
 
-if [ $# -lt 1 ] ; then
-    echo "usage: $0 <build|install|boot|test|patchcheck|bisect>..." >&2
+usage() {
+    echo "usage: $PROGNAME [-p patch] <build|install|boot|test|patchcheck|bisect>..." >&2
     exit 1
+}
+
+PROGNAME=$0
+WORKING_DIR=$(pwd)
+
+if [ $# -lt 1 ] ; then
+    usage
 fi
+
+PATCH=""
+
+while getopts p: OPT ; do
+    case $OPT in
+	p)
+	    PATCH=$(realpath $OPTARG)
+	    if [ ! \( -f $PATCH -a -f $PATCH \) ] ; then
+		echo "invalid patch file: $PATCH" >&2
+	    fi
+	    ;;
+	\?)
+	    usage
+	    ;;
+    esac
+done
+
+shift $((OPTIND - 1))
 
 CONFFILE=ktest.conf
 SUBCOMMAND=$1
@@ -108,6 +133,13 @@ esac
 trap "_cleanup ; exit 0" 0 1 2 3 15
 
 function _cleanup {
+    cd $WORKING_DIR
+    if [ -n "$PATCH" ] ; then
+	pushd linux
+	git checkout $ORIGIN
+	git branch -D $TEMPORARY_BRANCH
+	popd
+    fi
     restore_ktest_conf
 }
 
@@ -160,6 +192,18 @@ if [ $BOOT_VM_IF_NECESSARY -eq 1 ] ; then
     popd
 fi
 
-pushd ktest
+if [ -n "$PATCH" ] ; then
+    pushd linux
+    ORIGIN=$(git status | sed -nr -e "1s/^(HEAD detached at |On branch )(.*)$/\2/p")
+    TEMPORARY_BRANCH=elkdat-test
+    git checkout -b $TEMPORARY_BRANCH
+    if ! git am $PATCH ; then
+	git am --abort
+	popd
+	exit 1
+    fi
+    popd
+fi
+
+cd ktest
 ./ktest.pl
-popd

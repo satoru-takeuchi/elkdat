@@ -1,0 +1,9 @@
+#!/bin/bash
+
+ELKDAT_ROOT=$(realpath ../../)
+SHARED_DIR=${ELKDAT_ROOT}/elkdat
+
+cp walb-driver/module/walb-mod.ko ${SHARED_DIR}
+pushd ${SHARED_DIR}
+vagrant rsync
+popd

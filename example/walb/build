@@ -1,0 +1,10 @@
+#!/bin/bash
+
+KERNELDIR=$(realpath ../../output)
+
+build_driver() {
+    cd walb-driver/module
+    make KERNELDIR=${KERNELDIR} -j16
+}
+
+build_driver

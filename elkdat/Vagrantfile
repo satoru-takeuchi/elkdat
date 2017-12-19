@@ -65,6 +65,8 @@ Vagrant.configure("2") do |config|
     vm.vm.synced_folder './', '/vagrant', type: 'rsync'
     vm.vm.provider :libvirt do |domain|
       domain.cpus = 2
+      domain.cpu_mode = "host-passthrough"
+      domain.storage :file, :size => "10GB"
     end
   end
 

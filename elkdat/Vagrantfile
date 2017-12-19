@@ -80,5 +80,8 @@ Vagrant.configure("2") do |config|
      sed /etc/default/grub -i -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/s/"$/ console=ttyS0,115200n8"/'
      sed -e "s/@ROOT_UUID@/$(blkid -o value /dev/vda1 | sed -n -e 1p)/" /vagrant/ktest-grub-menuentry.template >/vagrant/ktest-grub-menuentry; cat /vagrant/ktest-grub-menuentry >>/etc/grub.d/40_custom
      update-grub
+     parted /dev/vdb mklabel gpt
+     parted /dev/vdb mkpart data ext4 0G 8G
+     parted /dev/vdb mkpart wal ext4 8G 9G
    SHELL
 end

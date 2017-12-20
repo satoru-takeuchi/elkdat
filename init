@@ -26,8 +26,3 @@ sed -e "s/@MACHINE@/$HOST/" \
 
 # get kernel source
 test -d linux || git clone https://github.com/torvalds/linux.git
-pushd linux
-make mrproper
-git checkout -f master
-git pull
-popd

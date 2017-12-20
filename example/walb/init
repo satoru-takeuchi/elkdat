@@ -1,5 +1,4 @@
 #!/bin/bash
 
-git clone https://github.com/walb-linux/walb-driver.git
-git clone https://github.com/walb-linux/walb-tools.git
-
+test -d walb-driver || git clone https://github.com/walb-linux/walb-driver.git
+test -d walb-tools || git clone https://github.com/walb-linux/walb-tools.git

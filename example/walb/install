@@ -3,8 +3,9 @@
 ELKDAT_ROOT=$(realpath ../../)
 SHARED_DIR=${ELKDAT_ROOT}/elkdat
 INSTALL_DIR=${SHARED_DIR}/walb
+TARGET_INSTALL_DIR=/vagrant/walb
 
-mkdir -p ${INSTALL_DIR}
+test ${INSTALL_DIR} || mkdir -p ${INSTALL_DIR}
 
 cp walb-driver/module/walb-mod.ko ${INSTALL_DIR}
 
@@ -16,6 +17,10 @@ pushd ${SHARED_DIR}
 vagrant rsync
 SSH_IP_ADDRESS=$(vagrant ssh-config | sed -n -e "s/.*HostName \([0-9.]*\)$/\1/p")
 SSH_KEY=../private_key
-ssh -i ${SSH_KEY} vagrant@${SSH_IP_ADDRESS} sudo rmmod walb-mod || :
-ssh -i ${SSH_KEY} vagrant@${SSH_IP_ADDRESS} sudo insmod /vagrant/walb/walb-mod.ko
+ssh -i ${SSH_KEY} vagrant@${SSH_IP_ADDRESS} sudo rmmod "walb-mod || :"
+ssh -i ${SSH_KEY} vagrant@${SSH_IP_ADDRESS} sudo "insmod ${TARGET_INSTALL_DIR}/walb-mod.ko"
+ssh -i ${SSH_KEY} vagrant@${SSH_IP_ADDRESS} sudo "${TARGET_INSTALL_DIR}/wdevc format-ldev /dev/vdb2 /dev/vdb1"
+ssh -i ${SSH_KEY} vagrant@${SSH_IP_ADDRESS} sudo "${TARGET_INSTALL_DIR}/wdevc format-ldev /dev/vdb2 /dev/vdb1"
+ssh -i ${SSH_KEY} vagrant@${SSH_IP_ADDRESS} sudo "${TARGET_INSTALL_DIR}/wdevc create-wdev -n test /dev/vdb2 /dev/vdb1"
+ssh -i ${SSH_KEY} vagrant@${SSH_IP_ADDRESS} sudo "mkfs.ext4 /dev/walb/test"
 popd

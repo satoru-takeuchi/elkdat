@@ -1,9 +1,21 @@
-#!/bin/bash
+#!/bin/bash -x
 
 ELKDAT_ROOT=$(realpath ../../)
 SHARED_DIR=${ELKDAT_ROOT}/elkdat
+INSTALL_DIR=${SHARED_DIR}/walb
 
-cp walb-driver/module/walb-mod.ko ${SHARED_DIR}
+mkdir -p ${INSTALL_DIR}
+
+cp walb-driver/module/walb-mod.ko ${INSTALL_DIR}
+
+pushd walb-tools
+cp -a $(make -s echo_binaries) ${INSTALL_DIR}
+popd
+
 pushd ${SHARED_DIR}
 vagrant rsync
+SSH_IP_ADDRESS=$(vagrant ssh-config | sed -n -e "s/.*HostName \([0-9.]*\)$/\1/p")
+SSH_KEY=../private_key
+ssh -i ${SSH_KEY} vagrant@${SSH_IP_ADDRESS} sudo rmmod walb-mod || :
+ssh -i ${SSH_KEY} vagrant@${SSH_IP_ADDRESS} sudo insmod /vagrant/walb/walb-mod.ko
 popd

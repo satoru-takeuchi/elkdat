@@ -14,7 +14,7 @@ ln -sf $(vagrant ssh-config | grep IdentityFile | awk '{print $2}' | sed -e 's/^
 HOST=$(vagrant ssh-config | grep HostName | awk '{print $2}')
 popd
 
-ssh-keygen -R ${HOST}
+test -e ~/.ssh/known_hosts && ssh-keygen -R ${HOST}
 ssh -i private_key -oStrictHostKeyChecking=no vagrant@${HOST} :
 
 # ktest setting (host)

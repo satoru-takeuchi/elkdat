@@ -13,7 +13,7 @@ struct timer_list mytimer;
 
 static unsigned long mytimer_timeout_msecs = 1000 * 1000;
 
-static void mytimer_fn(unsigned long arg)
+static void mytimer_fn(struct timer_list *timer)
 {
 	printk(KERN_ALERT "%lu secs passed.\n", mytimer_timeout_msecs / 1000);
 }
@@ -51,10 +51,8 @@ static struct file_operations test_fops = {
 
 static int mymodule_init(void)
 {
-	init_timer(&mytimer);
+	timer_setup(&mytimer, mytimer_fn, 0);
 	mytimer.expires = jiffies + mytimer_timeout_msecs * HZ / 1000; 
-	mytimer.data = 0;
-	mytimer.function = mytimer_fn;
 	add_timer(&mytimer);
 
 	topdir = debugfs_create_dir("mytimer", NULL);

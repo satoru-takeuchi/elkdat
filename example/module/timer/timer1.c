@@ -9,17 +9,15 @@ struct timer_list mytimer;
 
 #define MYTIMER_TIMEOUT_SECS	10
 
-static void mytimer_fn(unsigned long arg)
+static void mytimer_fn(struct timer_list *timer)
 {
 	printk(KERN_ALERT "10 secs passed.\n");
 }
 
 static int mymodule_init(void)
 {
-	init_timer(&mytimer);
+	timer_setup(&mytimer, mytimer_fn, 0);
 	mytimer.expires = jiffies + MYTIMER_TIMEOUT_SECS*HZ;
-	mytimer.data = 0;
-	mytimer.function = mytimer_fn;
 	add_timer(&mytimer);
 
 	return 0;

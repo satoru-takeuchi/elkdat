@@ -24,9 +24,9 @@ struct mytimer_data data[2] = {
 
 #define MYTIMER_TIMEOUT_SECS	10
 
-static void mytimer_fn(unsigned long arg)
+static void mytimer_fn(struct timer_list *timer)
 {
-	struct mytimer_data *data = (struct mytimer_data *)arg;
+	struct mytimer_data *data = from_timer(data, timer, timer);
 
 	printk(KERN_ALERT "%s: %d secs passed.\n",
 	       data->name, data->interval);
@@ -40,10 +40,8 @@ static int mymodule_init(void)
 
 	for (i = 0; i < 2; i++) {
 		struct mytimer_data *d = &data[i];
-		init_timer(&d->timer);
-		d->timer.function = mytimer_fn;
-		d->timer.expires = jiffies + d->interval*HZ;
-		d->timer.data = (unsigned long)d;
+		timer_setup(&d->timer, mytimer_fn, 0);
+		d->timer.expires = jiffies + MYTIMER_TIMEOUT_SECS*HZ;
 		add_timer(&d->timer);
 	}
 

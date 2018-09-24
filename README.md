@@ -18,18 +18,11 @@ You need to have a Linux system with virtualization feature. It the following co
 $ egrep '^flags.*(vmx|svm)' /proc/cpuinfo
 ```
 
-You should install some packages before initializing elkdat. Here is how to install them on Ubuntu 16.04.
+You should install some packages before initializing elkdat. Here is how to install them on Ubuntu 18.04.
 
 ```
 $ sudo apt-get install git vagrant libvirt-bin libvirt-dev kernel-package qemu-kvm libssl-dev libncurses5-dev
 $ sudo usermod -aG libvirtd <your user name>
-```
-
-Log out and back in here.
-
-```
-$ sudo sed -i'' "s/Specification.all = nil/Specification.reset/" /usr/lib/ruby/vendor_ruby/vagrant/bundler.rb         # See https://github.com/vagrant-libvirt/vagrant-libvirt/issues/575 for more details about this patching
-$ vagrant plugin install vagrant-libvirt
 ```
 
 If you use other distros, please install corresponding packages.
@@ -78,13 +71,14 @@ After that, you can login to test VM as follows.
 
 ```
 $ ./login 
-Welcome to Ubuntu 16.04.2 LTS (GNU/Linux 4.4.0-72-generic x86_64)
+Welcome to Ubuntu 18.04.1 LTS (GNU/Linux 4.18.0-ktest x86_64)
 
  * Documentation:  https://help.ubuntu.com
  * Management:     https://landscape.canonical.com
  * Support:        https://ubuntu.com/advantage
-Last login: Thu Jun  1 21:18:26 2017 from 192.168.121.1
-vagrant@packer-qemu:~$ 
+
+Last login: Mon Sep 24 16:32:47 2018 from 192.168.121.1
+vagrant@localhost:~$ 
 ```
 
 You can shutdown test VM as follows.
@@ -118,12 +112,12 @@ From here, we assume the current directory is underneath the top directory.
 
 ## Run your own kernel (don't change source)
 
-Let's boot linux v4.9. You can build, install, and boot linux v4.9
+Let's boot linux v4.18. You can build, install, and boot linux v4.18
 just by the following several commands.
 
 ```
 $ cd linux
-$ git checkout v4.9
+$ git checkout v4.18
 $ cd ../
 $ ./test boot
 ...
@@ -143,15 +137,15 @@ Let's login to test VM to confirm whether it works correctly.
 ```
 $ ./login
 ...
-vagrant@packer-qemu:~$ uname -r
-4.9.0-ktest
-vagrant@packer-qemu:~$ 
+vagrant@localhost:~$ uname -r
+4.18.0-ktest
+vagrant@localhost:~$ 
 ```
 
 Finally we restarts the previous (probably the distro's) kernel.
 
 ```
-vagrant@packer-qemu:~$ exit
+vagrant@localhost:~$ exit
 $ ./reload
 $ 
 ```
@@ -161,18 +155,18 @@ You can use your own kernel again by the following commands.
 ```
 $ ./login
 ...
-vagrant@packer-qemu:~$ sudo su 
-root@packer-qemu:/home/vagrant# grub-reboot ktest
-root@packer-qemu:/home/vagrant# exit
+vagrant@localhost:~$ sudo su 
+root@localhost:/home/vagrant# grub-reboot ktest
+root@localhost:/home/vagrant# exit
 exit 
-vagrant@packer-qemu:~$ exit
+vagrant@localhost:~$ exit
 ...
 $ ./reload
 ...
 $ 
 ```
 
-You can boot the any kernel version by changing the above mentioned _v4.9_ in
+You can boot the any kernel version by changing the above mentioned _v4.18_ in
 `git checkout` command to any tag or to any commit ID.
 
 If it's OK to just build or just install your own kernel rather than booting it,
@@ -180,47 +174,41 @@ Please use `./test build` or `./test install` instead of `./test boot`.
 
 ## Run your own kernel (change source)
 
-Here we apply a trivial patch, printing a simple message to kernel log, to linux v4.9 and boot it.
+Here we apply a trivial patch, printing a simple message to kernel log, to linux v4.18 and boot it.
 
 Let's take a look at the patch.
 
 ```
 $ cat example/kernel-patch/first/0001-Print-a-message-on-boot.patch 
-From 93cc6bf35ed2850634cb1bcfe621b38d81c6ab25 Mon Sep 17 00:00:00 2001
-From: Satoru Takeuchi <satoru.takeuchi@gmail.com>
-Date: Wed, 14 Dec 2016 20:42:17 +0900
-Subject: [PATCH] Print a message on boot
+commit 20c7774d8c3b055b9cfa330d457b5a3baf5f01bf (HEAD -> sat)
+Author: Satoru Takeuchi <satoru.takeuchi@gmail.com>
+Date:   Tue Sep 25 01:52:18 2018 +0900
 
-Signed-off-by: Satoru Takeuchi <satoru.takeuchi@gmail.com>
----
- init/main.c | 1 +
- 1 file changed, 1 insertion(+)
+    test
 
 diff --git a/init/main.c b/init/main.c
-index 2858be7..9736dac 100644
+index 5e13c544bbf4..e4b57366ddac 100644
 --- a/init/main.c
 +++ b/init/main.c
-@@ -657,6 +657,7 @@ asmlinkage __visible void __init start_kernel(void)
-        }
-
-        ftrace_init();
-+       printk("my patch is applied!\n");
-
-        /* Do the rest non-__init'ed, we're now alive */
-        rest_init();
---
-2.10.2
-
+@@ -590,6 +590,7 @@ asmlinkage __visible void __init start_kernel(void)
+ 	mm_init();
+ 
+ 	ftrace_init();
++	printk("my patch is applied!\n");
+ 
+ 	/* trace_printk can be enabled here */
+ 	early_trace_init();
 ```
 
 Make a kernel and boot it.
 
 ```
 $ cd linux
-$ git checkout -b test v4.9
+$ git checkout -b test v4.18
 Switched to a new branch 'test'
 $ git am ../example/kernel-patch/first/0001-Print-a-message-on-boot.patch 
-Applying: Print a message on boot
+Applying: test
+$ cd ../
 $ ./test boot
 ...
 *******************************************
@@ -236,19 +224,18 @@ KTEST RESULT: TEST 1 SUCCESS!!!!         **
 Login to confirm whether we succeeded or not.
 
 ```
-$ cd ../elkdat
-$ vagrant ssh
+$ ./login
 ...
-vagrant@packer-qemu:~$ uname -r
-4.9.0-ktest+
-vagrant@packer-qemu:~$ 
+vagrant@localhost:~$ uname -r
+4.18.0-ktest+
+vagrant@localhost:~$ 
 ```
 
 Read the kernel log.
 
 ```
-vagrant@packer-qemu:~$ dmesg | grep "my patch"
-[    0.167288] my patch is applied!
+vagrant@localhost:~$ dmesg | grep "my patch"
+[    0.000000] my patch is applied!
 $ 
 ```
 
@@ -307,19 +294,19 @@ your own kernel.
 ```
 $ make login
 ...
-vagrant@packer-qemu:~$ sudo su
-root@packer-qemu:/home/vagrant# insmod /vagrant/hello.ko
-root@packer-qemu:/home/vagrant# 
+vagrant@localhost:~$ sudo su
+root@localhost:/home/vagrant# insmod /vagrant/hello.ko
+root@localhost:/home/vagrant# 
 ```
 
 See the kernel log.
 
 ```
-root@packer-qemu:/home/vagrant# dmesg | tail -3
+root@localhost:/home/vagrant# dmesg | tail -3
 [  314.198886] random: crng init done
 [  516.935519] hello: loading out-of-tree module taints kernel.
 [  516.936950] Hello world!
-root@packer-qemu:/home/vagrant# 
+root@localhost:/home/vagrant# 
 ```
 
 Succeeded!
@@ -416,95 +403,59 @@ of a patchset consists of four patches and its 3rd one causes panic during boot.
 These patches are quite simple. Please take a look at each patches if you're interested in it.
 
 ```
-$ git log --oneline -5 
-f80a34f377c1 4/4: fine again
-227ef171c7f5 3/4: BUG
-d662eff22070 2/4: fine
-925417fc1d36 1/4: fine
-69973b830859 Linux 4.9
+$ git am ../example/kernel-patch/patchcheck/*
+$ git log --oneline -5
+706e8dec17ba (HEAD -> patchcheck, checkpatch) 4/4 fine
+dc95a48e92b6 3/4 BUG
+0141c43b9cf1 2/4 fine
+0602bde62d19 1/4 fine
+94710cac0ef4 (tag: v4.18) Linux 4.18
 $ 
 ```
 
 To test this patchset, run the follownig command.
 
 ```
-$ ./test patchcheck 925417fc1d36 f80a34f377c1 boot
+$ cd ../
+./test patchcheck 0602bde62d19 706e8dec17ba boot
 ...
 Going to test the following commits:
-925417fc1d3670f994c26bb09369b5f6c02c60bb 1/4: fine
-d662eff220707c43c7bce87cf0343e27e67ce848 2/4: fine
-227ef171c7f59c570fb821a81581ef78eed5be89 3/4: BUG
-f80a34f377c1832d450dc0cc402288ee86ae2836 4/4: fine again
+0602bde62d19ec5268a8411de70e9c59d39aff5d 1/4 fine
+0141c43b9cf1b3a022ae058c23fb81b2a7ddeae6 2/4 fine
+dc95a48e92b6b02d2dea2ca6a2ed6326e8f02c55 3/4 BUG
+706e8dec17bac0cc9bac4d5ac7c39d75994d1e7e 4/4 fine
 
-Processing commit "925417fc1d3670f994c26bb09369b5f6c02c60bb 1/4: fine"
+Processing commit "0602bde62d19ec5268a8411de70e9c59d39aff5d 1/4 fine"
 ...
-Build time:   6 minutes 58 seconds
+
+Build time:   3 minutes 13 seconds
 Install time: 8 seconds
-Reboot time:  21 seconds
+Reboot time:  24 seconds
 
-Processing commit "d662eff220707c43c7bce87cf0343e27e67ce848 2/4: fine"
+Processing commit "0141c43b9cf1b3a022ae058c23fb81b2a7ddeae6 2/4 fine"
 ...
+Build time:   31 seconds
+Install time: 7 seconds
+Reboot time:  23 seconds
+
+Processing commit "dc95a48e92b6b02d2dea2ca6a2ed6326e8f02c55 3/4 BUG"
+...
+[5 seconds] FAILED!
+power cycle
+cd ../elkdat; vagrant halt; sleep 5; vagrant up ... [77 seconds] SUCCESS
+** Wait for monitor to settle down **
+
 ** Monitor flushed **
-kill child process 30367
-closing!
-
-Build time:   1 minute 15 seconds
-Install time: 9 seconds
-Reboot time:  19 seconds
-
-Processing commit "227ef171c7f59c570fb821a81581ef78eed5be89 3/4: BUG"
-
-[    0.135879] ftrace: allocating 32412 entries in 127 pages
-[    0.163806] 1/4 patch is applied!
-[    0.164408] 2/4 patch is applied!
-[    0.164933] 3/4 patch is applied!
-[    0.165469] ------------[ cut here ]------------
-[    0.166151] kernel BUG at /home/sat/src/elkdat/linux/init/main.c:663!
-[    0.167041] invalid opcode: 0000 [#1] SMP
-[    0.167647] Modules linked in:
-[    0.168216] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 4.9.0-ktest+ #3
-[    0.169076] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.9.3-20161025_171302-gandalf 04/01/2014
-[    0.170451] task: ffffffff8ee0e540 task.stack: ffffffff8ee00000
-[    0.171254] RIP: 0010:[<ffffffff8ef81fd9>]  [<ffffffff8ef81fd9>] start_kernel+0x460/0x462
-[    0.172501] RSP: 0000:ffffffff8ee03f50  EFLAGS: 00010282
-[    0.173241] RAX: 0000000000000015 RBX: ffffffffffffffff RCX: ffffffff8ee54108
-[    0.174175] RDX: 0000000000000000 RSI: 0000000000000246 RDI: 0000000000000246
-[    0.175109] RBP: ffffffff8ee03f80 R08: 0000000000000000 R09: 0000000000000000
-[    0.176043] R10: ffff9b179ffd7000 R11: 0000000000000098 R12: ffff9b179ffd06c0
-[    0.176987] R13: ffffffff8f030840 R14: ffffffff8f03d2e0 R15: 000000000008a000
-[    0.177924] FS:  0000000000000000(0000) GS:ffff9b179fc00000(0000) knlGS:0000000000000000
-[    0.179070] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    0.179853] CR2: 00000000ffffffff CR3: 0000000013e07000 CR4: 00000000000406f0
-[    0.180831] Stack:
-[    0.181216]  ffffffff8f03d2e0 0000000000000000 000000000000008e 0000ffffffff8ef8
-[    0.182537]  0000000000000020 ffffffff8ef81120 ffffffff8ee03f90 ffffffff8ef812ca
-[    0.183854]  ffffffff8ee03fe8 ffffffff8ef81419 00000000ffffffff 8ef88e0000101117
-[    0.185206] Call Trace:
-[    0.185639]  [<ffffffff8ef81120>] ? early_idt_handler_array+0x120/0x120
-[    0.186521]  [<ffffffff8ef812ca>] x86_64_start_reservations+0x24/0x26
-[    0.187383]  [<ffffffff8ef81419>] x86_64_start_kernel+0x14d/0x170
-[    0.188228] Code: 02 00 e8 b7 b1 02 00 48 c7 c7 5d 13 c5 8e e8 e6 a2 21 ff 48 c7 c7 76 13 c5 8e e8 da a2 21 ff 48 c7 c7 8f 13 c5 8e e8 ce a2 21 ff <0f> 0b 31 c0 80 3f 00 55 48 89 e5 75 0f c7 05 4c 80 17 00 01 00 
-[    0.194669] RIP  [<ffffffff8ef81fd9>] start_kernel+0x460/0x462
-[    0.195523]  RSP <ffffffff8ee03f50>
-[    0.196097] ---[ end trace f68728a0d3053b52 ]---
-[    0.196776] Kernel panic - not syncing: Attempted to kill the idle task!
-[    0.197707] ---[ end Kernel panic - not syncing: Attempted to kill the idle task!
-bug timed out after 1 seconds
-Test forced to stop after 60 seconds after failure
-CRITICAL FAILURE... failed - got a bug report
-REBOOTING
-ssh -i /home/sat/src/elkdat/private_key root@192.168.121.181 sync ... [18 seconds] FAILED!
-ssh -i /home/sat/src/elkdat/private_key root@192.168.121.181 reboot; ... ssh: connect to host 192.168.121.181 port 22: No route to host
-[3 seconds] SUCCESS
  See /home/sat/src/elkdat/ktest/ktest.log for more info.
-failed - got a bug report
+failed - never got a boot prompt.
+~/src/elkdat/ktest ~/src/elkdat
+~/src/elkdat
 $ 
 ```
 
 Fails on testing 3/4 patch. We succeeded.
 
-
-### Find which commit introduce a bug by bysect
+### Find which commit introduce a bug by bisect
 
 If you found a kernel didn't work and you also know which kernel worked fine,
 `./test bisect` can be used to detect the wrong commit. It works as `git bisect`[^1].
@@ -518,45 +469,58 @@ of a patchset consists of ten patches and its 6th one causes panic during boot.
 These patches are quite simple. Please take a look at each patches if you're interested in it.
 
 ```
+$ git am ../example/kernel-patch/bisect/*
 $ git log --oneline -11
-e617cb9e8cc0 10/10: BUG
-d5159dda90f5 9/10: BUG
-ddd7cdeacf47 8/10: BUG
-9f6c5fbcd327 7/10: BUG
-966f935e572c 6/10: BUG
-f4504cce28bc 5/10: fine
-cacbea15ec6a 4/10: fine
-ee916bd4a2a8 3/10: fine
-b61a82b33071 2/10: fine
-5b762eff2275 1/10: fine
-69973b830859 Linux 4.9
+2ff43f7d52d0 (HEAD -> bisect) 10/10 BUG
+0c841b3a35cd 9/10 BUG
+001f75285253 8/10 BUG
+bae066f6e395 7/10 BUG
+56b54e93122b 6/10 BUG
+2d3dbf6afe6b 5/10 fine
+6b42ac68fa8a 4/10 fine
+5694f923f6f7 3/10 fine
+468bbf83f8a6 2/10 fine
+6d4155d1aecf 1/10 fine
+94710cac0ef4 (tag: v4.18) Linux 4.18
+$ 
 ```
 
 To find bad commit which introduce a bug, so it's 6/10 patch, run the following command.
 
 ```
-$ ./test bisect 5b762eff2275 e617cb9e8cc0 boot
+$ ../
+$ ./test bisect 6d4155d1aecf 2ff43f7d52d0 boot
 ...
 RUNNING TEST 1 of 1 with option bisect boot
 
-git rev-list --max-count=1 5b762eff2275 ... SUCCESS
-git rev-list --max-count=1 e617cb9e8cc0 ... SUCCESS
-git bisect start ... [0 seconds] SUCCESS
-git bisect good 5b762eff2275a414938275c00ccae7d2847f10b4 ... [0 seconds] SUCCESS
-git bisect bad e617cb9e8cc0b49a507bc2fd2840fb803da00436 ... SUCCESS
-Bisecting: 4 revisions left to test after this (roughly 2 steps) [f4504cce28bcb56b15df0c936e1598cb733f1658]
+git rev-list --max-count=1 6d4155d1aecf ... SUCCESS
+git rev-list --max-count=1 2ff43f7d52d0 ... SUCCESS
+git bisect start ... [1 second] SUCCESS
+git bisect good 6d4155d1aecf51fd878d00143ed2d176e976e587 ... [0 seconds] SUCCESS
+git bisect bad 2ff43f7d52d0ef95ebfaf0b4ae805689c6a55cd7 ... SUCCESS
+Bisecting: 4 revisions left to test after this (roughly 2 steps) [2d3dbf6afe6b7c3ba89f740ec6c9a719ef9cfb50]
 ...
-git bisect good ... SUCCESS
-Bisecting: 2 revisions left to test after this (roughly 1 step) [9f6c5fbcd3276216291f60f41504bab6003c95e6]
+Bisecting: 2 revisions left to test after this (roughly 1 step) [bae066f6e395a8a884864534ff4a3759ede3814b]
+
+Build time:   3 minutes 13 seconds
+Install time: 7 seconds
+Reboot time:  24 seconds
+...
+Bisecting: 0 revisions left to test after this (roughly 0 steps) [56b54e93122b1d5410ce533a85c1ee53c85279aa]
+
+Build time:   3 minutes 14 seconds
+Install time: 7 seconds
+Reboot time:  2 minutes 7 seconds
 ...
 git bisect bad ... SUCCESS
-Bisecting: 0 revisions left to test after this (roughly 0 steps) [966f935e572c728f17877ab8a8fac454e04deda6]
-...
-...
-git bisect bad ... SUCCESS
-Found bad commit... 966f935e572c728f17877ab8a8fac454e04deda6
-...
-Bad commit was [966f935e572c728f17877ab8a8fac454e04deda6]
+Found bad commit... 56b54e93122b1d5410ce533a85c1ee53c85279aa
+
+Build time:   3 minutes 14 seconds
+Install time: 13 seconds
+Reboot time:  2 minutes 8 seconds
+git bisect log ... [0 seconds] SUCCESS
+git bisect reset ... [0 seconds] SUCCESS
+Bad commit was [56b54e93122b1d5410ce533a85c1ee53c85279aa]
 
 
 
@@ -568,6 +532,8 @@ KTEST RESULT: TEST 1 SUCCESS!!!!         **
 
     1 of 1 tests were successful
 
+~/src/elkdat/ktest ~/src/elkdat
+~/src/elkdat
 $ 
 ```
 

@@ -1,24 +1,24 @@
-From 9f6c5fbcd3276216291f60f41504bab6003c95e6 Mon Sep 17 00:00:00 2001
+From f4f224fd211cb1f488a49266c6640855ed95f526 Mon Sep 17 00:00:00 2001
 From: Satoru Takeuchi <satoru.takeuchi@gmail.com>
-Date: Sat, 4 Feb 2017 21:01:30 +0900
-Subject: [PATCH 07/10] 7/10: BUG
+Date: Tue, 25 Sep 2018 03:48:28 +0900
+Subject: [PATCH 07/10] 7/10 BUG
 
 ---
  init/main.c | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/init/main.c b/init/main.c
-index 6ef4bfe0c76d..6f4893cfb8d6 100644
+index 7b8a809b785a..349157e9ed26 100644
 --- a/init/main.c
 +++ b/init/main.c
-@@ -664,6 +664,7 @@ asmlinkage __visible void __init start_kernel(void)
- 	pr_warn("5/10 patch is applied!\n");
- 	pr_warn("6/10 patch is applied!\n");
+@@ -597,6 +597,7 @@ asmlinkage __visible void __init start_kernel(void)
+ 	pr_warn("5/10");
+ 	pr_warn("6/10");
  	BUG();
-+	pr_warn("7/10 patch is applied!\n");
++	pr_warn("7/10");
  
- 	/* Do the rest non-__init'ed, we're now alive */
- 	rest_init();
+ 	/* trace_printk can be enabled here */
+ 	early_trace_init();
 -- 
-2.11.0
+2.17.1
 

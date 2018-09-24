@@ -1,25 +1,24 @@
-From 93cc6bf35ed2850634cb1bcfe621b38d81c6ab25 Mon Sep 17 00:00:00 2001
+From 20c7774d8c3b055b9cfa330d457b5a3baf5f01bf Mon Sep 17 00:00:00 2001
 From: Satoru Takeuchi <satoru.takeuchi@gmail.com>
-Date: Wed, 14 Dec 2016 20:42:17 +0900
-Subject: [PATCH] Print a message on boot
+Date: Tue, 25 Sep 2018 01:52:18 +0900
+Subject: [PATCH] test
 
-Signed-off-by: Satoru Takeuchi <satoru.takeuchi@gmail.com>
 ---
  init/main.c | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/init/main.c b/init/main.c
-index 2858be7..9736dac 100644
+index 5e13c544bbf4..e4b57366ddac 100644
 --- a/init/main.c
 +++ b/init/main.c
-@@ -657,6 +657,7 @@ asmlinkage __visible void __init start_kernel(void)
- 	}
+@@ -590,6 +590,7 @@ asmlinkage __visible void __init start_kernel(void)
+ 	mm_init();
  
  	ftrace_init();
 +	printk("my patch is applied!\n");
  
- 	/* Do the rest non-__init'ed, we're now alive */
- 	rest_init();
+ 	/* trace_printk can be enabled here */
+ 	early_trace_init();
 -- 
-2.10.2
+2.17.1
 

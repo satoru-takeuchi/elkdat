@@ -1,25 +1,25 @@
-From 227ef171c7f59c570fb821a81581ef78eed5be89 Mon Sep 17 00:00:00 2001
+From dc95a48e92b6b02d2dea2ca6a2ed6326e8f02c55 Mon Sep 17 00:00:00 2001
 From: Satoru Takeuchi <satoru.takeuchi@gmail.com>
-Date: Fri, 3 Feb 2017 23:22:32 +0900
-Subject: [PATCH 3/4] 3/4: BUG
+Date: Tue, 25 Sep 2018 02:12:00 +0900
+Subject: [PATCH 3/4] 3/4 BUG
 
 ---
  init/main.c | 2 ++
  1 file changed, 2 insertions(+)
 
 diff --git a/init/main.c b/init/main.c
-index a5ad8bbf2527..ef1096b99225 100644
+index 6fba6c9833d8..0a5a09a2e93b 100644
 --- a/init/main.c
 +++ b/init/main.c
-@@ -659,6 +659,8 @@ asmlinkage __visible void __init start_kernel(void)
+@@ -592,6 +592,8 @@ asmlinkage __visible void __init start_kernel(void)
  	ftrace_init();
  	pr_warn("1/4 patch is applied!\n");
  	pr_warn("2/4 patch is applied!\n");
 +	pr_warn("3/4 patch is applied!\n");
 +	BUG();
  
- 	/* Do the rest non-__init'ed, we're now alive */
- 	rest_init();
+ 	/* trace_printk can be enabled here */
+ 	early_trace_init();
 -- 
-2.11.0
+2.17.1
 

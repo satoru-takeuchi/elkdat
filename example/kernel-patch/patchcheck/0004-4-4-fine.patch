@@ -1,21 +1,21 @@
-From b2120b4538796fe0608b177e5e7290cd0a96c54f Mon Sep 17 00:00:00 2001
+From 706e8dec17bac0cc9bac4d5ac7c39d75994d1e7e Mon Sep 17 00:00:00 2001
 From: Satoru Takeuchi <satoru.takeuchi@gmail.com>
-Date: Tue, 25 Sep 2018 03:23:09 +0900
-Subject: [PATCH 05/10] 5/10 fine
+Date: Tue, 25 Sep 2018 02:12:25 +0900
+Subject: [PATCH 4/4] 4/4 fine
 
 ---
  init/main.c | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/init/main.c b/init/main.c
-index 45cfda1a489a..01e116f6bb4c 100644
+index 0a5a09a2e93b..467bc46c5c86 100644
 --- a/init/main.c
 +++ b/init/main.c
 @@ -594,6 +594,7 @@ asmlinkage __visible void __init start_kernel(void)
- 	pr_warn("2/10");
- 	pr_warn("3/10");
- 	pr_warn("4/10");
-+	pr_warn("5/10");
+ 	pr_warn("2/4 patch is applied!\n");
+ 	pr_warn("3/4 patch is applied!\n");
+ 	BUG();
++	pr_warn("4/4 patch is applied!\n");	
  
  	/* trace_printk can be enabled here */
  	early_trace_init();

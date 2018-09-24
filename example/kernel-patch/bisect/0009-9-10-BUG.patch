@@ -1,24 +1,24 @@
-From d5159dda90f52a255967eb31c297f30f821167cd Mon Sep 17 00:00:00 2001
+From 575c678ee76da1ba539bc73922653adffe9d85ee Mon Sep 17 00:00:00 2001
 From: Satoru Takeuchi <satoru.takeuchi@gmail.com>
-Date: Sat, 4 Feb 2017 21:01:59 +0900
-Subject: [PATCH 09/10] 9/10: BUG
+Date: Tue, 25 Sep 2018 03:49:02 +0900
+Subject: [PATCH 09/10] 9/10 BUG
 
 ---
  init/main.c | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/init/main.c b/init/main.c
-index f46f34302e56..d48ad379d563 100644
+index 1fa980210d9c..53011afab325 100644
 --- a/init/main.c
 +++ b/init/main.c
-@@ -666,6 +666,7 @@ asmlinkage __visible void __init start_kernel(void)
+@@ -599,6 +599,7 @@ asmlinkage __visible void __init start_kernel(void)
  	BUG();
- 	pr_warn("7/10 patch is applied!\n");
- 	pr_warn("8/10 patch is applied!\n");
-+	pr_warn("9/10 patch is applied!\n");	
+ 	pr_warn("7/10");
+ 	pr_warn("8/10");
++	pr_warn("9/10");
  
- 	/* Do the rest non-__init'ed, we're now alive */
- 	rest_init();
+ 	/* trace_printk can be enabled here */
+ 	early_trace_init();
 -- 
-2.11.0
+2.17.1
 

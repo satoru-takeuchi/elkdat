@@ -1,24 +1,24 @@
-From d662eff220707c43c7bce87cf0343e27e67ce848 Mon Sep 17 00:00:00 2001
+From 0141c43b9cf1b3a022ae058c23fb81b2a7ddeae6 Mon Sep 17 00:00:00 2001
 From: Satoru Takeuchi <satoru.takeuchi@gmail.com>
-Date: Fri, 3 Feb 2017 23:22:09 +0900
-Subject: [PATCH 2/4] 2/4: fine
+Date: Tue, 25 Sep 2018 02:09:59 +0900
+Subject: [PATCH 2/4] 2/4 fine
 
 ---
  init/main.c | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/init/main.c b/init/main.c
-index 99383a7ee5ba..a5ad8bbf2527 100644
+index 4ea8b2382b68..6fba6c9833d8 100644
 --- a/init/main.c
 +++ b/init/main.c
-@@ -658,6 +658,7 @@ asmlinkage __visible void __init start_kernel(void)
+@@ -591,6 +591,7 @@ asmlinkage __visible void __init start_kernel(void)
  
  	ftrace_init();
  	pr_warn("1/4 patch is applied!\n");
 +	pr_warn("2/4 patch is applied!\n");
  
- 	/* Do the rest non-__init'ed, we're now alive */
- 	rest_init();
+ 	/* trace_printk can be enabled here */
+ 	early_trace_init();
 -- 
-2.11.0
+2.17.1
 

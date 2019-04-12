@@ -112,12 +112,12 @@ From here, we assume the current directory is underneath the top directory.
 
 ## Run your own kernel (don't change source)
 
-Let's boot linux v4.18. You can build, install, and boot linux v4.18
+Let's boot linux v5.0. You can build, install, and boot linux v5.0
 just by the following several commands.
 
 ```
 $ cd linux
-$ git checkout v4.18
+$ git checkout v5.0
 $ cd ../
 $ ./test boot
 ...
@@ -166,7 +166,7 @@ $ ./reload
 $ 
 ```
 
-You can boot the any kernel version by changing the above mentioned _v4.18_ in
+You can boot the any kernel version by changing the above mentioned _v5.0_ in
 `git checkout` command to any tag or to any commit ID.
 
 If it's OK to just build or just install your own kernel rather than booting it,

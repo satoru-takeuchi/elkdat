@@ -138,7 +138,7 @@ Let's login to test VM to confirm whether it works correctly.
 $ ./login
 ...
 vagrant@localhost:~$ uname -r
-4.18.0-ktest
+5.0.0-ktest
 vagrant@localhost:~$ 
 ```
 

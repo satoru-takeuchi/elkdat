@@ -1,8 +1,0 @@
-#!/bin/bash
-
-WORKDIR=$(dirname $0)
-
-pushd ${WORKDIR}
-make install
-echo "Hello walb auto test!"
-popd

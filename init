@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-BOXNAME=peru/ubuntu-18.04-server-amd64
+BOXNAME="generic/ubuntu2004"
 
 # get base image
 if ! vagrant box list | grep -q "$BOXNAME (libvirt, " ; then

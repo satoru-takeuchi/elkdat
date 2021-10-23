@@ -12,28 +12,28 @@ kernel newbies and non-developers who'd like to test linux kernel.
 
 # Prerequisite environment
 
-You need to have a Linux system with virtualization feature. It the following command shows one or more lines, yoor machine has that feature.
+You need to have a Linux system with virtualization feature. It the following command returns 0, your machine has that feature.
 
 ```
-$ egrep '^flags.*(vmx|svm)' /proc/cpuinfo
+$ egrep -q '^flags.*(vmx|svm)' /proc/cpuinfo
 ```
 
-You should install some packages before initializing elkdat. Here is how to install them on Ubuntu 18.04.
+You should install some packages before initializing elkdat. Here is how to install them on Ubuntu 20.04.
 
 ```
-$ sudo apt-get install git vagrant libvirt-bin libvirt-dev kernel-package qemu-kvm libssl-dev libncurses5-dev
+$ sudo apt install git vagrant libvirt-daemon libvirt-dev kernel-package qemu-kvm libssl-dev libncurses5-dev
 $ sudo usermod -aG libvirt <your user name>
 ```
 
-If you use other distros, please install corresponding packages.
+If you use other distributions, please install corresponding packages.
 
 # How to initialize
 
 Just run `./init` underneath the top of this tool.
 
-Please note that elkdat downloads whole linux kernel source repository in `./init`.
-If you already have it, please copy it underneath the top directory as "linux".
-In addition, elkdat flushes existing kernel, object files and so on by `mrproper`.
+Please note that elkdat downloads whole linux kernel source repository.
+If you already have it, please copy it underneath the top directory as "linux"(symlink is also OK).
+In addition, elkdat will delete all binary files like kernel images and object files by `mrproper`.
 
 # How to finalize
 
@@ -49,7 +49,7 @@ $
 
 # Managing test VM
 
-You can boot test VM as follows.
+You can boot a test VM as follows.
 
 ```
 $ ./up
@@ -64,21 +64,13 @@ Bringing machine 'ktest' up with 'libvirt' provider...
 $ 
 ```
 
-Please note that test VM is already up just after running init command.
-
+Please note that the test VM is already up just after running init command. You need to execute this command if the VM is down.
 
 After that, you can login to test VM as follows.
 
 ```
 $ ./login 
-Welcome to Ubuntu 18.04.1 LTS (GNU/Linux 4.18.0-ktest x86_64)
-
- * Documentation:  https://help.ubuntu.com
- * Management:     https://landscape.canonical.com
- * Support:        https://ubuntu.com/advantage
-
-Last login: Mon Sep 24 16:32:47 2018 from 192.168.121.1
-vagrant@localhost:~$ 
+vagrant@ubuntu2004:~$ 
 ```
 
 You can shutdown test VM as follows.
@@ -91,7 +83,6 @@ $
 
 You can also reboot test VM as follows.
 
-
 ```
 $ ./reload
 ==> ktest: Halting domain...
@@ -103,21 +94,19 @@ $ ./reload
 ==> ktest: Machine already provisioned. Run `vagrant provision` or use the `--provision`
 ==> ktest: flag to force provisioning. Provisioners marked to run always will still run.
 $ 
-
 ```
 
 # Tutorial
 
 From here, we assume the current directory is underneath the top directory.
 
-## Run your own kernel (don't change source)
+## Run a vanilla kernel
 
-Let's boot linux v5.0. You can build, install, and boot linux v5.0
-just by the following several commands.
+Let's boot linux v5.13. You can build, install, and boot linux by the following commands.
 
 ```
 $ cd linux
-$ git checkout v5.0
+$ git checkout v5.13
 $ cd ../
 $ ./test boot
 ...
@@ -132,17 +121,17 @@ KTEST RESULT: TEST 1 SUCCESS!!!!         **
 $ 
 ```
 
-Let's login to test VM to confirm whether it works correctly.
+Let's login to the test VM to confirm whether it works correctly.
 
 ```
 $ ./login
 ...
 vagrant@localhost:~$ uname -r
-5.0.0-ktest
+5.13.0-ktest
 vagrant@localhost:~$ 
 ```
 
-Finally we restarts the previous (probably the distro's) kernel.
+We can boot the previous (probably the distribution's) kernel.
 
 ```
 vagrant@localhost:~$ exit
@@ -150,7 +139,7 @@ $ ./reload
 $ 
 ```
 
-You can use your own kernel again by the following commands.
+You can use your own kernel again.
 
 ```
 $ ./login
@@ -166,15 +155,14 @@ $ ./reload
 $ 
 ```
 
-You can boot the any kernel version by changing the above mentioned _v5.0_ in
+You can boot the any kernel version by changing the above mentioned _v5.13_ in
 `git checkout` command to any tag or to any commit ID.
 
-If it's OK to just build or just install your own kernel rather than booting it,
-Please use `./test build` or `./test install` instead of `./test boot`.
+If you just want to build or install your own kernel, please use `./test build` or `./test install` instead.
 
-## Run your own kernel (change source)
+## Run your own kernel
 
-Here we apply a trivial patch, printing a simple message to kernel log, to linux v4.18 and boot it.
+Here we apply a trivial patch which add a trivial kernel log.
 
 Let's take a look at the patch.
 
@@ -243,10 +231,10 @@ Succeeded!
 
 Please restart your system here with the previous kernel.
 
-## Load your own kernel module
+## Use your own kernel module
 
 It's easy to build, install, and load your own kernel module. Here we use
-the simple module which just prints "Hello world!" on loading.
+a module which just prints "Hello world!" in loading.
 
 Let's take a look at its source.
 
@@ -280,18 +268,11 @@ $ make
 $ 
 ```
 
-Copy it to the test VM.
+Install and load this module.
 
 ```
 $ make install
 ...
-$ 
-```
-
-Load it. Please not that it only succeed if the test VM is booted with
-your own kernel.
-
-```
 $ make login
 ...
 vagrant@localhost:~$ sudo su
@@ -321,7 +302,7 @@ $ cp ktest/minconfig{,.bak}
 $ cp ktest/minconfig linux/.config
 $ cd linux
 $ make menuconfig
-... 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　# Here change the configuration as you like
+... # Here change the configuration as you like
 $ mv .config ../ktest/minconfig
 $ make mrproper
 $ cd ../
@@ -330,9 +311,7 @@ $ cd ../
 If the new kernel built from the new configuration doesn't boot,
 please restore the configuration file by `ktest/minconfig{.bak,}`.
 
-## Rich tests
-
-In addition to build, install, and boot your own kernel, elkdat has the following features.
+## Advanced tests
 
 ### Run your own tests
 
